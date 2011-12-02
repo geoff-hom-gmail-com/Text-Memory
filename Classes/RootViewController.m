@@ -51,11 +51,15 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Once we create this, we'll keep it in memory and just reuse it.
 @property (nonatomic, retain) UIPopoverController *popoverController;
 
-// Date when the text view was double-tapped while in first-letter mode.
-@property (nonatomic, retain) NSDate *textViewDoubleTapInFirstLetterModeDate;
+@property (nonatomic, retain) NSDate *previousSelectedRangeDate;
 
-// Date when the text view's selection changed.
-@property (nonatomic, retain) NSDate *textViewSelectionChangeDate;
+@property (nonatomic) NSUInteger previousSelectedRangeLocation;
+
+// Date when the text view was single-tapped while in first-letter mode.
+@property (nonatomic, retain) NSDate *textViewSingleTapInFirstLetterModeDate;
+
+// Date when the text view's selected range changed to the correct value.
+@property (nonatomic, retain) NSDate *textViewSelectedRangeIsCorrectDate;
 
 // Add a new text and show it.
 - (void)addANewText;
@@ -65,6 +69,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 // Delete the current text.
 - (void)deleteCurrentText;
+
+// The user tapped at the selected range. Either do nothing, reveal text, or hide text.
+- (void)doSomethingAtSelectedRange;
 
 // Go to editing view for the current text.
 - (void)editCurrentText;
@@ -91,6 +98,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Show the entire text for the text view's current selection (in first-letter mode), expanding to at least a word.
 - (void)showFullTextForSelection;
 
+// Return whether the text view's current selected range is correct.
+- (BOOL)textViewSelectedRangeIsCorrect;
+
 // Make sure the correct title and text is showing. (And that the text's mode is correct.)
 - (void)updateTitleAndTextShowing;
 
@@ -99,7 +109,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 @implementation RootViewController
 
 @synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
-@synthesize firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, textViewDoubleTapInFirstLetterModeDate, textViewSelectionChangeDate;
+@synthesize firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
 
 - (void)actionSheet:(UIActionSheet *)theActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	
@@ -216,14 +226,30 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	self.topToolbar.userInteractionEnabled = NO;
 }
 
+// Determine if we should do something at the selected range. There must have been a single-tap at the selected range.
+- (void)considerDoingSomethingAtSelectedRange {
+    
+    // Check whether there was an appropriate single tap. Check whether the current selected range is correct.
+    if (self.textViewSingleTapInFirstLetterModeDate != nil && self.textViewSelectedRangeIsCorrectDate != nil) {
+        
+        // Check whether both happened recently.
+        if ( ([self.textViewSingleTapInFirstLetterModeDate timeIntervalSinceNow] > -0.1) && ( [self.textViewSelectedRangeIsCorrectDate timeIntervalSinceNow] > -0.1) ) {
+            
+            //NSLog(@"Do something at selected range:|%@|", NSStringFromRange(self.currentTextTextView.selectedRange) );
+            [self doSomethingAtSelectedRange];
+        }
+    }
+}
+
 - (void)dealloc {
 	
 	[self removeObservers];
 	
 	self.popoverController.delegate = nil;
 	[popoverController release];
-	[textViewDoubleTapInFirstLetterModeDate release];
-    [textViewSelectionChangeDate release];
+    [previousSelectedRangeDate release];
+	[textViewSingleTapInFirstLetterModeDate release];
+    [textViewSelectedRangeIsCorrectDate release];
     
 	[introText_ release];
     
@@ -258,6 +284,93 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
+}
+
+- (void)doSomethingAtSelectedRange {
+    
+    // If the location is whitespace, do nothing.
+    // Update: Text view will automatically move the caret to the start or end of a word. So, if the location is whitespace, check location - 1. If that is not whitespace, then proceed with the selected index at location - 1.
+    
+    NSCharacterSet *whitespaceAndNewlineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSUInteger selectedIndex = self.currentTextTextView.selectedRange.location;
+    unichar aChar = [self.currentTextTextView.text characterAtIndex:selectedIndex];
+    //NSLog(@"dSASR range:%@ aChar:%@", NSStringFromRange(self.currentTextTextView.selectedRange), [NSString stringWithCharacters:&aChar length:1] );
+    
+    if ([whitespaceAndNewlineCharacterSet characterIsMember:aChar] && (selectedIndex != 0) ) {
+            
+        selectedIndex = selectedIndex - 1;
+        aChar = [self.currentTextTextView.text characterAtIndex:selectedIndex];
+        if ([whitespaceAndNewlineCharacterSet characterIsMember:aChar]) {
+            
+            return;
+        }
+    }
+    
+    // If the location is in a word with underscores, then reveal the full text up through that word.
+    // If the location is in a word without underscores (i.e. full text), then show underscores (i.e., hide text) from (and including) that word to the end.
+    // To detect underscores, we'll first search forward and backward until whitespace to get the word range.
+    
+    // Check from selected index to end. Since we want the end of the word and not actual whitespace, subtract one from the end.
+    NSRange rangeToCheck = NSMakeRange(selectedIndex, self.currentTextTextView.text.length - selectedIndex);
+    NSRange endOfWordRange = [self.currentTextTextView.text rangeOfCharacterFromSet:whitespaceAndNewlineCharacterSet options:0 range:rangeToCheck];
+    if (endOfWordRange.location == NSNotFound) {
+        
+        endOfWordRange.location = self.currentTextTextView.text.length - 1;
+    } else {
+        
+        endOfWordRange.location = endOfWordRange.location - 1;
+    }
+    
+    // Check from start up to selected index. Since we want the start of the word and not actual whitespace, add one to the start.
+    rangeToCheck = NSMakeRange(0, selectedIndex);
+    NSRange startOfWordRange = [self.currentTextTextView.text rangeOfCharacterFromSet:whitespaceAndNewlineCharacterSet options:NSBackwardsSearch range:rangeToCheck];
+    if (startOfWordRange.location == NSNotFound) {
+        
+        startOfWordRange.location = 0;
+    } else {
+        
+        startOfWordRange.location = startOfWordRange.location + 1;
+    }
+    
+    NSRange wordRange = NSMakeRange(startOfWordRange.location, endOfWordRange.location - startOfWordRange.location + 1);
+    NSLog(@"word range:%@", NSStringFromRange(wordRange) );
+    NSCharacterSet *underscoreCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"_"];
+    NSRange underscoreRange = [self.currentTextTextView.text rangeOfCharacterFromSet:underscoreCharacterSet options:0 range:wordRange];
+    NSRange targetRange;
+    NSString *newString;
+    NSString *textWithReplacementString;
+    if (underscoreRange.location == NSNotFound) {
+        
+        // Show underscores from word through end.
+        NSLog(@"hide text");
+        
+        targetRange = NSMakeRange(wordRange.location, self.currentTextTextView.text.length - wordRange.location);
+        newString = [self.currentText.underscoreText substringWithRange:targetRange];
+        textWithReplacementString = [self.currentTextTextView.text stringByReplacingCharactersInRange:targetRange withString:newString];
+        self.currentTextTextView.text = textWithReplacementString;
+        
+        // Set selected range to start of word.
+        //self.currentTextTextView.selectedRange = NSMakeRange(wordRange.location, 0);
+    } else {
+        
+        // Show full text from start up through word.
+        NSLog(@"reveal text");
+        
+        targetRange = NSMakeRange(0, endOfWordRange.location + 1);
+        newString = [self.currentText.text substringWithRange:targetRange];
+        textWithReplacementString = [self.currentTextTextView.text stringByReplacingCharactersInRange:targetRange withString:newString];
+        
+        self.currentTextTextView.text = textWithReplacementString;
+        
+        // Set selected range to just after end of word.
+        
+        NSUInteger startOfNextWhitespace = endOfWordRange.location + 1;
+        if (startOfNextWhitespace == self.currentTextTextView.text.length) {
+            
+            startOfNextWhitespace = startOfNextWhitespace - 1;
+        }
+        //self.currentTextTextView.selectedRange = NSMakeRange(startOfNextWhitespace, 0);
+    }
 }
 
 - (void)editCurrentText {
@@ -322,11 +435,12 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     
     // There is a custom double-tap gesture recognizer attached to the text view. Currently, it's the only gesture recognizer that has this class as its delegate. We want this recognizer to work with other double-tap recognizers inherent to the text view.
+    // Actually now it's for two single-tap gesture recognizers.
     
     BOOL answer = NO;
     if ( [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] ) {
         
-        UITapGestureRecognizer *aTapGestureRecognizer = (UITapGestureRecognizer *)otherGestureRecognizer;
+       //UITapGestureRecognizer *aTapGestureRecognizer = (UITapGestureRecognizer *)otherGestureRecognizer;
        // if (aTapGestureRecognizer.numberOfTapsRequired == 2) {
             
             answer = YES;
@@ -400,11 +514,27 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
     if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
         
-        self.textViewDoubleTapInFirstLetterModeDate = [NSDate date];
+        //self.textViewDoubleTapInFirstLetterModeDate = [NSDate date];
         if ( [self shouldShowFullTextForSelection] ) {
             
             [self showFullTextForSelection];
         } 
+    }
+}
+
+// A single tap in the text view should reveal or hide words, depending on the context. What's important is to recognize the tap and determine where (the selection point). Since we're recognizing the selection point by allowing the normal single-tap in the text view, we need to allow simultaneous gesture recognition.
+- (void)handleTextViewSingleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer {
+    
+    if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
+        
+        NSLog(@"single tap in text view detected");
+        self.textViewSingleTapInFirstLetterModeDate = [NSDate date];
+        [self considerDoingSomethingAtSelectedRange];
+        /*
+        if ( [self shouldShowFullTextForSelection] ) {
+            
+            [self showFullTextForSelection];
+        } */
     }
 }
 
@@ -540,6 +670,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     // Check whether there was a double-tap in the text view in first-letter mode. Check whether the text view's selection changed. Check if both happened recently.
     
     BOOL answer = NO;
+    /*
 //    NSLog(@"RVC checking whether to show full text for selection...");
     if (self.textViewDoubleTapInFirstLetterModeDate != nil && self.textViewSelectionChangeDate != nil) {
         
@@ -556,7 +687,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
                 answer = YES;
             }
         }
-    }
+    }*/
     return answer;
 }
 
@@ -769,34 +900,62 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	
     NSLog(@"RVC selection changed to:||%@||", NSStringFromRange(theTextView.selectedRange) );
     
-    // Sometimes the selected range will be beyond the end of the text. In that case, hide the edit menu and do nothing.
-    
-    if (self.currentTextTextView.selectedRange.location >= [self.currentTextTextView.text length] ) {
-        
-        // The edit menu will still appear sometimes. For example, if the user double-taps in certain non-word areas (e.g., right before a word? in whitespace?). It doesn't happen every time the range equals the length, but when it does happen, the range equals the length. However, logging here says the menu isn't visible, and setting it not visible here doesn't help. In this case, the edit menu must be triggered downstream, elsewhere. 
-        // Update: Resigning first responder seems to prevent the edit menu from appearing.
-        
-        //[[UIMenuController sharedMenuController] setMenuVisible:NO animated:NO];
-        
-        if (self.currentTextTextView.isFirstResponder) {
-            
-            [self.currentTextTextView resignFirstResponder];
-        }
-        
-        return;
-    }
-    
-    //testing; if in fl mode, always resign first responder to avoid keyboard showing up?
+    // In first-letter mode, the text view is editable to allow a single tap to set the selection range. But we don't want the keyboard to show up, so we'll always resign the first responder.
     if ( (self.textToShowSegmentedControl.selectedSegmentIndex == firstLettersSegmentIndex) && self.currentTextTextView.isFirstResponder) {
         
         [self.currentTextTextView resignFirstResponder];
     }
     
-    self.textViewSelectionChangeDate = [NSDate date];
+    // Sometimes the selected range will be beyond the end of the text. In that case, do nothing.
+    if (self.currentTextTextView.selectedRange.location >= self.currentTextTextView.text.length) {
+        
+        return;
+    }
+    
+    /*
     if ( [self shouldShowFullTextForSelection] ) {
         
         [self showFullTextForSelection];
+    }*/
+    // need to make sure this works regardless of order of the selection change and the custom single-tap; tricky because of checking whether selection is/was valid
+    // the selection change should control one flag, the tap a second flag; both will call a method which checks both flags and the dates of both flags
+    // scenarios: tap first, selection second
+    // selection first, tap second
+    // change textViewSelectionIsValid to take in the locations and dates, so it can't be called elsewhere?
+    if ([self textViewSelectedRangeIsCorrect]) {
+        
+        self.textViewSelectedRangeIsCorrectDate = [NSDate date];
+        [self considerDoingSomethingAtSelectedRange];
+    } else {
+        
+        self.textViewSelectedRangeIsCorrectDate = nil;
     }
+    self.previousSelectedRangeLocation = self.currentTextTextView.selectedRange.location;
+    self.previousSelectedRangeDate = [NSDate date];
+}
+
+- (BOOL)textViewSelectedRangeIsCorrect {
+    
+    // When user single-taps in the text view, textViewDidChangeSelection is called twice. The first time, the selected range is the text length (in iOS 4.3) or the previous range (in iOS 5.0). The second time, the selected range is correct (i.e., where the tap was). So we want to ignore the first textViewDidChangeSelection. (If user double-taps, then textViewDidChangeSelection is called four times, with the correct range the last three times.)
+
+    // Assume selected ranges outside the text range were already ignored. 
+    // If the user taps once and later taps elsewhere, then the previous range will be detected once and the new range will be detected immediately after.
+    // If the user taps once and later taps in exactly the same place, then the previous range will be detected twice, with the second time immediately after the first. 
+    // So, we'll check if the current range is identical to the previous range. If so, the current range is incorrect. The exception is if the current range change happened immediately after the previous range change (e.g., < 0.1 seconds).
+    
+    BOOL answer = YES;
+    if (self.currentTextTextView.selectedRange.location == self.previousSelectedRangeLocation) {
+        
+        answer = NO;
+        NSTimeInterval timeSincePreviousSelectedRange = [ [NSDate date] timeIntervalSinceDate:self.previousSelectedRangeDate];
+        //NSLog(@"time interval:%f", timeSincePreviousSelectedRange);
+        if (timeSincePreviousSelectedRange < 0.1) {
+            
+            NSLog(@"dates were very close");
+            answer = YES;
+        }
+    }
+    return answer;
 }
 
 - (void)updateTitleAndTextShowing {
@@ -871,12 +1030,21 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		// Set text view's delegate.
 		self.currentTextTextView.delegate = self;
         
+        // Add gesture recognizer: single tap in text view.
+        aSingleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTextViewSingleTapGesture:)];
+		aSingleTapGestureRecognizer.numberOfTapsRequired = 1;
+        aSingleTapGestureRecognizer.delegate = self;
+        [self.currentTextTextView addGestureRecognizer:aSingleTapGestureRecognizer];
+		[aSingleTapGestureRecognizer release];
+        
+        /*
         // Add gesture recognizer for double taps in the text view.
         aDoubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTextViewDoubleTapGesture:)];
         aDoubleTapGestureRecognizer.numberOfTapsRequired = 2;
         aDoubleTapGestureRecognizer.delegate = self;
 		[self.currentTextTextView addGestureRecognizer:aDoubleTapGestureRecognizer];
-        [aDoubleTapGestureRecognizer release];        
+        [aDoubleTapGestureRecognizer release];      
+         */
 	}
 }
 
