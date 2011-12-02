@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Welcome!</key>
+	<dict>
+		<key>Text</key>
+		<string>Welcome to Text-to-First-Letters, by Geoff Hom!
+		
+This is a tool for memorizing any text. It works by showing you only the first letter of each word in the text. 
+            
+First, add the text you want to memorize. Then, study the text until you can read it aloud by seeing only the first letters.
+
+The big idea: When you see only the first letters, but you can read the entire text aloud, then the text should effectively be in your head.
+            
+Geoff may be reached at GeoffHom@gmail.com.
+
+            
+An example is included, with instructions for using this tool. To see the example: Tap "Texts" (top-left of the screen), then "Example."</string>
+	</dict>
+	<key>Example</key>
+	<dict>
+		<key>Text</key>
+		<string>To get a feel for this tool, try to memorize this paragraph from Abraham Lincoln:
+		
+  "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
+
+
+You may switch between the full text and the first letter of each word by tapping "Full Text" and "First Letters" (bottom of the screen). Your goal is to recite the paragraph above when only the first letters are visible.
+            
+
+After you have memorized the text, try the following:
+
+Switch between full text and first letters more easily: Double-tap in the margins outside the text.
+
+Reveal a word: While viewing first letters, double-tap a word. 
+            
+Hide revealed words: While viewing first letters, double-tap a word to reveal it. Then, make a single tap in the margins outside the text.
+            
+Increase or decrease the font size: Tap "Font Size" (top-right).
+
+Add a new text: Tap "+" (top-left), then "Add a New Text."
+        
+Enjoy!</string>
+	</dict>
+</dict>
+</plist>
