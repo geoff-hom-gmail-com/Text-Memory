@@ -10,6 +10,7 @@
 #import "EditTextViewController.h"
 #import "FontSizeViewController.h"
 #import "OverlayView.h"
+#import "RecordingAndPlaybackController.h"
 #import "RootViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Text.h"
@@ -42,6 +43,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Private category for private methods.
 @interface RootViewController ()
 
+// Once we create this, we'll keep it in memory and just reuse it.
+@property (nonatomic, retain) UIActionSheet *actionSheet;
+
 // Segment in segmented control for switching to first-letter mode.
 @property (nonatomic) NSUInteger firstLettersSegmentIndex;
 
@@ -70,6 +74,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Delete the current text.
 - (void)deleteCurrentText;
 
+// If a popover is already showing, hide it immediately. (E.g., the user taps on one button, showing a popover, then immediately taps on another button, to show a different popover.) Includes action sheets displayed in a popover.
+- (void)dismissAnyVisiblePopover;
+
 // The user tapped at the selected range. Either do nothing, reveal text, or hide text.
 - (void)doSomethingAtSelectedRange;
 
@@ -84,11 +91,11 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Stop key-value observing.
 - (void)removeObservers;
 
+// Create this view's popover controller, if necessary. Set the controller's content view controller.
+- (void)setPopoverControllerContentViewController:(UIViewController *)theViewController;
+
 // Return whether to show the full text for the text view's selection. Should return YES if the user double-tapped on a word while in first-letter mode.
 - (BOOL)shouldShowFullTextForSelection;
-
-// Show only the first letter of each word (plus punctuation).
-- (void)showFirstLettersOnly;
 
 // Show the entire text (vs. only first letters).
 - (void)showFullText;
@@ -97,6 +104,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 // Show the entire text for the text view's current selection (in first-letter mode), expanding to at least a word.
 - (void)showFullTextForSelection;
+
+// Show only underscores for each word (plus punctuation).
+- (void)showUnderscoresOnly;
 
 // Return whether the text view's current selected range is correct.
 - (BOOL)textViewSelectedRangeIsCorrect;
@@ -108,8 +118,8 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 @implementation RootViewController
 
-@synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
-@synthesize firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
+@synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, recordBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
+@synthesize actionSheet, firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
 
 - (void)actionSheet:(UIActionSheet *)theActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	
@@ -130,8 +140,8 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	}
 	
 	// Re-enable toolbars, in case they were disabled.
-	self.topToolbar.userInteractionEnabled = YES;
-	self.bottomToolbar.userInteractionEnabled = YES;
+//	self.topToolbar.userInteractionEnabled = YES;
+//	self.bottomToolbar.userInteractionEnabled = YES;
 }
 
 - (void)addANewText {
@@ -163,67 +173,97 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         self.currentTextTextView.editable = NO;
 	} else if (theSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
 		
-		[self showFirstLettersOnly];
+		[self showUnderscoresOnly];
         self.currentTextTextView.editable = YES;
 	}
 }
 
+- (void)dismissAnyVisiblePopover {
+    
+    if (self.popoverController.popoverVisible) {
+        [self.popoverController dismissPopoverAnimated:NO];
+    }
+    if (self.actionSheet.visible) {
+        [self.actionSheet dismissWithClickedButtonIndex:-1 animated:NO];
+    }
+}
+
 - (IBAction)confirmAddText:(id)sender {
-	
-	// Ask user to confirm/choose via an action sheet.
-	UIActionSheet *anActionSheet;
-	anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:addTextTitleString, nil];
-	[anActionSheet showFromBarButtonItem:self.addTextBarButtonItem animated:NO];
-	[anActionSheet release];
-	
-	// Disable toolbar with this button.
-	self.topToolbar.userInteractionEnabled = NO;
+    
+    if (self.actionSheet.visible && (self.actionSheet.tag == 300) ) {
+        
+        [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+    } else {
+     
+        [self dismissAnyVisiblePopover];
+        
+        // Ask user to confirm/choose via an action sheet.
+        UIActionSheet *anActionSheet;
+        anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:addTextTitleString, nil];
+        [anActionSheet showFromBarButtonItem:self.addTextBarButtonItem animated:NO];
+        anActionSheet.tag = 300;
+        self.actionSheet = anActionSheet;
+        [anActionSheet release];
+	}
 }
 
 - (IBAction)confirmDeleteCurrentText:(id)sender {
 	
-	// If a default text, tell why it can't be deleted. Else, ask user to confirm via an action sheet.
-		
-	UIActionSheet *anActionSheet;
-	if ([self.currentText isDefaultData]) {
-		
-		anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Can't Delete Examples", nil];
-		
-		// Disable buttons. This action sheet is informational only.
-		anActionSheet.userInteractionEnabled = NO;
-		
-	} else {
-		
-		anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:deleteTextTitleString otherButtonTitles:nil];
-	}
-	[anActionSheet showFromBarButtonItem:self.trashBarButtonItem animated:NO];
-	[anActionSheet release];
-	
-	// Disable toolbar with this button.
-	self.bottomToolbar.userInteractionEnabled = NO;
+    if (self.actionSheet.visible && (self.actionSheet.tag == 302) ) {
+        
+        [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+    } else {
+        
+        [self dismissAnyVisiblePopover];
+        
+        // If a default text, tell why it can't be deleted. Else, ask user to confirm via an action sheet.
+            
+        UIActionSheet *anActionSheet;
+        if ([self.currentText isDefaultData]) {
+            
+            anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Can't Delete Examples", nil];
+            
+            // Disable buttons. This action sheet is informational only.
+            anActionSheet.userInteractionEnabled = NO;
+            
+        } else {
+            
+            anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:deleteTextTitleString otherButtonTitles:nil];
+        }
+        [anActionSheet showFromBarButtonItem:self.trashBarButtonItem animated:NO];
+        anActionSheet.tag = 302;
+        self.actionSheet = anActionSheet;
+        [anActionSheet release];
+    }
 }
 
 - (IBAction)confirmEditCurrentText:(id)sender {
 	
-	// If a default text, tell why it can't be edited. Else, ask user to confirm/choose via an action sheet.
-	
-	UIActionSheet *anActionSheet;
-	if ([self.currentText isDefaultData]) {
-		
-		anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Can't Edit Examples", nil];
-		
-		// Disable buttons. This action sheet is informational only.
-		anActionSheet.userInteractionEnabled = NO;
-		
-	} else {
-		
-		anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:editTextTitleString, nil];
-	}
-	[anActionSheet showFromBarButtonItem:self.editTextBarButtonItem animated:NO];
-	[anActionSheet release];
-	
-	// Disable toolbar with this button.
-	self.topToolbar.userInteractionEnabled = NO;
+    if (self.actionSheet.visible && (self.actionSheet.tag == 301) ) {
+        
+        [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+    } else {
+        
+        [self dismissAnyVisiblePopover];
+        
+        // If a default text, tell why it can't be edited. Else, ask user to confirm/choose via an action sheet.
+        
+        UIActionSheet *anActionSheet;
+        if ([self.currentText isDefaultData]) {
+            
+            anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Can't Edit Examples", nil];
+            
+            // Disable buttons. This action sheet is informational only.
+            anActionSheet.userInteractionEnabled = NO;
+        } else {
+            
+            anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:editTextTitleString, nil];
+        }
+        [anActionSheet showFromBarButtonItem:self.editTextBarButtonItem animated:NO];
+        anActionSheet.tag = 301;
+        self.actionSheet = anActionSheet;
+        [anActionSheet release];
+    }
 }
 
 // Determine if we should do something at the selected range. There must have been a single-tap at the selected range.
@@ -245,6 +285,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	
 	[self removeObservers];
 	
+    [actionSheet release];
 	self.popoverController.delegate = nil;
 	[popoverController release];
     [previousSelectedRangeDate release];
@@ -259,6 +300,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	self.currentTextTextView.delegate = nil;
 	[currentTextTextView release];
 	[editTextBarButtonItem release];
+    [recordBarButtonItem release];
 	[textToShowSegmentedControl release];
 	[titleLabel release];
 	[topToolbar release];
@@ -402,7 +444,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		[anActionSheet release];
 		
 		// Disable toolbar with this button.
-		self.bottomToolbar.userInteractionEnabled = NO;
+		//self.bottomToolbar.userInteractionEnabled = NO;
 	} else {
 		
 		EditTextViewController *anEditTextViewController = [(EditTextViewController *)[EditTextViewController alloc] initWithText:self.currentText contentOffset:self.currentTextTextView.contentOffset font:self.currentTextTextView.font];
@@ -472,13 +514,25 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         
     if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
         
-        [self showFirstLettersOnly];
+        // Hide/show textview.
+        if (self.currentTextTextView.isHidden) {
+            
+            [self.currentTextTextView setHidden:NO];
+        } else {
+            
+            [self.currentTextTextView setHidden:YES];
+        }
+        
+        //[self showFirstLettersOnly];
     }
 }
 
 //?
 - (void)handleSwipeLeftGesture:(UISwipeGestureRecognizer *)theSwipeGestureRecognizer {
     
+    NSLog(@"swipe left detected");
+    
+    /*
     if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
         
         // If our text view's selected range is not valid, then set the range to the end of the text.
@@ -491,11 +545,15 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         
         [self hideFullTextForSelectedClause];
     }
+     */
 }
 
 //?
 - (void)handleSwipeRightGesture:(UISwipeGestureRecognizer *)theSwipeGestureRecognizer {
     
+    NSLog(@"swipe right detected");
+    
+    /*
     if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
         
         // If our text view's selected range is not valid, then set the range to the start of the text.
@@ -507,7 +565,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         NSLog(@"hSRG; selection:|%@|", NSStringFromRange(self.currentTextTextView.selectedRange) );
         
         [self showFullTextForSelectedClause];
-    }
+    }*/
 }
 
 - (void)handleTextViewDoubleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer {
@@ -660,6 +718,22 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	[self removeObserver:self forKeyPath:@"currentText"];
 }
 
+- (void)setPopoverControllerContentViewController:(UIViewController *)theViewController {
+    
+    if (!self.popoverController) {
+        
+        UIPopoverController *aPopoverController = [[UIPopoverController alloc] initWithContentViewController:theViewController];
+        aPopoverController.delegate = self;
+        self.popoverController = aPopoverController;
+        [aPopoverController release];
+    } else {
+        self.popoverController.contentViewController = theViewController;
+    }
+    
+    // Resize popover.
+    self.popoverController.popoverContentSize = self.popoverController.contentViewController.contentSizeForViewInPopover;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Overriden to allow any orientation.
     return YES;
@@ -691,49 +765,25 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     return answer;
 }
 
-- (void)showFirstLettersOnly {
-	
-	//self.currentTextTextView.text = self.currentText.firstLetterText;
-    self.currentTextTextView.text = self.currentText.underscoreText;
-}
-
 - (IBAction)showFontSizePopover:(id)sender {
     
-	if (!self.popoverController.popoverVisible) {
+    // If this popover is visible, then hide it slowly. Else, hide any other popover immediately and show this one.
+    if (self.popoverController.popoverVisible && [self.popoverController.contentViewController isKindOfClass:[FontSizeViewController class] ]) {
+        
+        [self.popoverController dismissPopoverAnimated:YES];
+    } else {
+        
+        [self dismissAnyVisiblePopover];
 		
 		// Create the view controller for the popover.
 		FontSizeViewController *aFontSizeViewController = [[FontSizeViewController alloc] init];
 		aFontSizeViewController.delegate = self;
 		aFontSizeViewController.currentFontSize = self.currentTextTextView.font.pointSize;
-		UIViewController *aViewController = aFontSizeViewController;
-		
-		// Create the popover controller, if necessary.
-		if (!self.popoverController) {
-			
-			UIPopoverController *aPopoverController = [[UIPopoverController alloc] initWithContentViewController:aViewController];
-			self.popoverController = aPopoverController;
-			[aPopoverController release];
-		} else {
-			self.popoverController.contentViewController = aViewController;
-		}
-		[aViewController release];
-		
-		// Resize popover.
-		self.popoverController.popoverContentSize = self.popoverController.contentViewController.contentSizeForViewInPopover;
-		
+        
 		// Present popover.
-		self.popoverController.delegate = self;
+		[self setPopoverControllerContentViewController:aFontSizeViewController];
 		[self.popoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-		
-		// Disable toolbar (until popover dismissed).
-		self.topToolbar.userInteractionEnabled = NO;
 	}	
-}
-
-//put in header; alphabetize
-- (void)showUnderscoresOnly {
-	
-	self.currentTextTextView.text = self.currentText.underscoreText;
 }
 
 - (void)showFullText {
@@ -852,38 +902,48 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     }
 }
 
+- (IBAction)showRecordingPopover:(id)sender {
+    
+    // Careful here. Checking that popover's view controller is a nav controller. If we have multiple popovers like this, we'll need another way to discriminate.
+    if (self.popoverController.popoverVisible && [self.popoverController.contentViewController isKindOfClass:[UINavigationController class] ]) {
+        
+        [self.popoverController dismissPopoverAnimated:YES];
+    } else {
+        
+        [self dismissAnyVisiblePopover];
+        
+		// Create the view controller for the popover.
+        RecordingAndPlaybackController *aRecordingAndPlaybackController = [[RecordingAndPlaybackController alloc] init];
+		
+		// Present popover.
+		[self setPopoverControllerContentViewController:aRecordingAndPlaybackController.navigationController];
+		[self.popoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+	}    
+}
+
 - (IBAction)showTextsPopover:(id)sender {
 	
-	if (!self.popoverController.popoverVisible) {
+    if (self.popoverController.popoverVisible && [self.popoverController.contentViewController isKindOfClass:[TextsTableViewController class] ]) {
+        
+        [self.popoverController dismissPopoverAnimated:YES];
+    } else {
+        
+        [self dismissAnyVisiblePopover];
 			
 		// Create the view controller for the popover.
 		TextsTableViewController *aTextsTableViewController = [[TextsTableViewController alloc] init];
 		aTextsTableViewController.delegate = self;
 		aTextsTableViewController.currentText = self.currentText;
-		UIViewController *aViewController = aTextsTableViewController;
-		
-		// Create the popover controller, if necessary.
-		if (!self.popoverController) {
-			
-			UIPopoverController *aPopoverController = [[UIPopoverController alloc] initWithContentViewController:aViewController];
-			self.popoverController = aPopoverController;
-			[aPopoverController release];
-		} else {
-			self.popoverController.contentViewController = aViewController;
-			
-		}
-		[aViewController release];
-		
-		// Resize popover.
-		self.popoverController.popoverContentSize = self.popoverController.contentViewController.contentSizeForViewInPopover;
 		
 		// Present popover.
-		self.popoverController.delegate = self;
+		[self setPopoverControllerContentViewController:aTextsTableViewController];
 		[self.popoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-		
-		// Disable toolbar (until popover dismissed).
-		self.topToolbar.userInteractionEnabled = NO;
 	}	
+}
+
+- (void)showUnderscoresOnly {
+	
+    self.currentTextTextView.text = self.currentText.underscoreText;
 }
 
 - (void)textsTableViewControllerDidSelectText:(TextsTableViewController *)sender {
@@ -962,7 +1022,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	
 	self.titleLabel.text = self.currentText.title;
 	if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
-		[self showFirstLettersOnly];
+		[self showUnderscoresOnly];
 	} else {
 		[self showFullText];
 	}
@@ -1056,6 +1116,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	
 	// Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    
+    self.actionSheet.delegate = nil;
+    self.actionSheet = nil;
 	
     self.popoverController.delegate = nil;
 	self.popoverController = nil;
@@ -1065,6 +1128,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	self.currentTextTextView.delegate = nil;
 	self.currentTextTextView = nil;
 	self.editTextBarButtonItem = nil;
+    self.recordBarButtonItem = nil;
 	self.textToShowSegmentedControl = nil;
 	self.titleLabel = nil;
 	self.topToolbar = nil;

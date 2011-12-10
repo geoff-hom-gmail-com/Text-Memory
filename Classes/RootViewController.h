@@ -39,6 +39,9 @@ extern NSString *testWidthString;
 
 @property (nonatomic, retain, readonly) Text *introText;
 
+// Button for recording the user's voice and playing it back.
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *recordBarButtonItem;
+
 // A segmented control for whether full text or first letters is shown.
 @property (nonatomic, retain) IBOutlet UISegmentedControl *textToShowSegmentedControl;
 
@@ -89,6 +92,9 @@ extern NSString *testWidthString;
 
 // Show/hide popover for changing the font size.
 - (IBAction)showFontSizePopover:(id)sender;
+
+// Show/hide popover for recording/playback.
+- (IBAction)showRecordingPopover:(id)sender;
 
 // Show/hide popover for selecting a text.
 - (IBAction)showTextsPopover:(id)sender;
