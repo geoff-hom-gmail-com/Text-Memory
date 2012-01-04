@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EditTextViewController.h"
 #import "FontSizeViewController.h"
+#import "RecordingAndPlaybackController.h"
 #import "TextsTableViewController.h"
 
 @class Text;
@@ -16,7 +17,7 @@
 // String for maintaining width of text views. ~1.5 alphabets.
 extern NSString *testWidthString;
 
-@interface RootViewController : UIViewController <EditTextViewControllerDelegate, FontSizeViewControllerDelegate, TextsTableViewDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate, UITextViewDelegate, UIGestureRecognizerDelegate> {
+@interface RootViewController : UIViewController <EditTextViewControllerDelegate, FontSizeViewControllerDelegate, RecordingAndPlaybackControllerDelegate, TextsTableViewDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate, UITextViewDelegate, UIGestureRecognizerDelegate> {
 
 @private
     Text *introText_;
@@ -89,6 +90,18 @@ extern NSString *testWidthString;
 
 // UIPopoverControllerDelegate method. Since the popover was dismissed, re-enable the corresponding toolbar.
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController;
+
+// RecordingAndPlaybackControllerDelegate method. Since playback started, show that in the button for the popover.
+- (void)recordingAndPlaybackControllerDidStartPlaying:(RecordingAndPlaybackController *)recordingAndPlaybackController;
+
+// RecordingAndPlaybackControllerDelegate method. Since recording started, show that in the button for the popover.
+- (void)recordingAndPlaybackControllerDidStartRecording:(RecordingAndPlaybackController *)recordingAndPlaybackController;
+
+// RecordingAndPlaybackControllerDelegate method. Since playback stopped, show that in the button for the popover.
+- (void)recordingAndPlaybackControllerDidStopPlaying:(RecordingAndPlaybackController *)recordingAndPlaybackController;
+
+// RecordingAndPlaybackControllerDelegate method. Since recording stopped, show that in the button for the popover.
+- (void)recordingAndPlaybackControllerDidStopRecording:(RecordingAndPlaybackController *)recordingAndPlaybackController;
 
 // Show/hide popover for changing the font size.
 - (IBAction)showFontSizePopover:(id)sender;

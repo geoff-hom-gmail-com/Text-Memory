@@ -7,16 +7,47 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PlaybackViewController.h"
+#import "RecordingViewController.h"
 
-@interface RecordingAndPlaybackController : NSObject
+@class RecordingAndPlaybackController;
+
+@protocol RecordingAndPlaybackControllerDelegate
+
+// Sent after playback has started.
+- (void)recordingAndPlaybackControllerDidStartPlaying:(RecordingAndPlaybackController *)sender;
+
+// Sent after recording has started.
+- (void)recordingAndPlaybackControllerDidStartRecording:(RecordingAndPlaybackController *)sender;
+
+// Sent after playback has stopped.
+- (void)recordingAndPlaybackControllerDidStopPlaying:(RecordingAndPlaybackController *)sender;
+
+// Sent after recording has stopped.
+- (void)recordingAndPlaybackControllerDidStopRecording:(RecordingAndPlaybackController *)sender;
+
+@end
+
+@interface RecordingAndPlaybackController : NSObject <PlaybackViewControllerDelegate, RecordingViewControllerDelegate>
+
+@property (nonatomic, assign) id <RecordingAndPlaybackControllerDelegate> delegate;
 
 // Navigation controller for switching between subviews.
 @property (nonatomic, retain) UINavigationController *navigationController;
 
-// A segmented control for whether to record voice or play it back.
-//@property (nonatomic, retain) IBOutlet UISegmentedControl *recordOrPlaySegmentedControl;
+// Override of NSObject method. Create the navigation controller and the segmented control.
+- (id)init;
 
-// Show controls according to the segment selected: Recording or playback.
-- (IBAction)changeMode:(UISegmentedControl *)theSegmentedControl;
+// PlaybackViewControllerDelegate method. Since playback started, notify our delegate.
+- (void)playbackViewControllerDidStartPlaying:(PlaybackViewController *)playbackViewController;
+
+// PlaybackViewControllerDelegate method. Since playback stopped, notify our delegate.
+- (void)playbackViewControllerDidStopPlaying:(PlaybackViewController *)playbackViewController;
+
+// RecordingViewControllerDelegate method. Since recording started, notify our delegate.
+- (void)recordingViewControllerDidStartRecording:(RecordingViewController *)recordingViewController;
+
+// RecordingViewControllerDelegate method. Since recording stopped, notify our delegate.
+- (void)recordingViewControllerDidStopRecording:(RecordingViewController *)recordingViewController;
 
 @end

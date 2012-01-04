@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* TextMemoryAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* TextMemoryAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
-		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28193055112F811F00ECF9B4 /* Text_Memory.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 28193054112F811F00ECF9B4 /* Text_Memory.xcdatamodeld */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
@@ -18,6 +17,9 @@
 		93059DFB14A2DF39001ECE4D /* RecordingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93059DF914A2DF39001ECE4D /* RecordingViewController.m */; };
 		93059DFC14A2DF39001ECE4D /* RecordingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93059DFA14A2DF39001ECE4D /* RecordingViewController.xib */; };
 		93059DFF14A3052C001ECE4D /* RecordingAndPlaybackController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93059DFE14A3052B001ECE4D /* RecordingAndPlaybackController.m */; };
+		9311CD6D14B6376400AF75D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9311CD6C14B6376400AF75D7 /* CoreAudio.framework */; };
+		9311CD7214B63B1500AF75D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		9311CD7314B63B2B00AF75D7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9390940F142F38090037CE62 /* QuartzCore.framework */; };
 		934912D91435A72700ED3BD0 /* FontSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 934912D71435A72700ED3BD0 /* FontSizeViewController.m */; };
 		934912DA1435A72700ED3BD0 /* FontSizeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 934912D81435A72700ED3BD0 /* FontSizeViewController.xib */; };
 		9349151614410CDE00ED3BD0 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 9349151514410CDE00ED3BD0 /* Icon-72.png */; };
@@ -33,10 +35,12 @@
 		93908D16142D0FB90037CE62 /* TextsTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93908D14142D0FB90037CE62 /* TextsTableViewController.xib */; };
 		93909245142EA13C0037CE62 /* EditTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93909243142EA13C0037CE62 /* EditTextViewController.m */; };
 		93909246142EA13C0037CE62 /* EditTextViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93909244142EA13C0037CE62 /* EditTextViewController.xib */; };
-		93909410142F38090037CE62 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9390940F142F38090037CE62 /* QuartzCore.framework */; };
 		93B8598F1421805C00C209A1 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93B8598D1421805C00C209A1 /* RootViewController.m */; };
 		93B859901421805C00C209A1 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93B8598E1421805C00C209A1 /* RootViewController.xib */; };
 		93B85A6414219E4000C209A1 /* Text.m in Sources */ = {isa = PBXBuildFile; fileRef = 93B85A6314219E4000C209A1 /* Text.m */; };
+		93BE881314B3D8E8005DD77F /* PlaybackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE881114B3D8E8005DD77F /* PlaybackViewController.m */; };
+		93BE881414B3D8E8005DD77F /* PlaybackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93BE881214B3D8E8005DD77F /* PlaybackViewController.xib */; };
+		93BE881614B41063005DD77F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93BE881514B41063005DD77F /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,11 +56,14 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Text_Memory_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Text_Memory_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Text_Memory-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Text_Memory-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		93059DF814A2DF39001ECE4D /* RecordingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = RecordingViewController.h; sourceTree = "<group>"; };
+		93059DF814A2DF39001ECE4D /* RecordingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingViewController.h; sourceTree = "<group>"; };
 		93059DF914A2DF39001ECE4D /* RecordingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingViewController.m; sourceTree = "<group>"; };
 		93059DFA14A2DF39001ECE4D /* RecordingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecordingViewController.xib; sourceTree = "<group>"; };
 		93059DFD14A3052B001ECE4D /* RecordingAndPlaybackController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingAndPlaybackController.h; sourceTree = "<group>"; };
 		93059DFE14A3052B001ECE4D /* RecordingAndPlaybackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordingAndPlaybackController.m; sourceTree = "<group>"; };
+		9311CD6C14B6376400AF75D7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		9311CD6E14B639AB00AF75D7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		9311CD7014B63A1700AF75D7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		934912D61435A72700ED3BD0 /* FontSizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontSizeViewController.h; sourceTree = "<group>"; };
 		934912D71435A72700ED3BD0 /* FontSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontSizeViewController.m; sourceTree = "<group>"; };
 		934912D81435A72700ED3BD0 /* FontSizeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FontSizeViewController.xib; sourceTree = "<group>"; };
@@ -83,6 +90,10 @@
 		93B8598E1421805C00C209A1 /* RootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
 		93B85A6214219E4000C209A1 /* Text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
 		93B85A6314219E4000C209A1 /* Text.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Text.m; sourceTree = "<group>"; };
+		93BE881014B3D8E8005DD77F /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
+		93BE881114B3D8E8005DD77F /* PlaybackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaybackViewController.m; sourceTree = "<group>"; };
+		93BE881214B3D8E8005DD77F /* PlaybackViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaybackViewController.xib; sourceTree = "<group>"; };
+		93BE881514B41063005DD77F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		93DC3A53148829D40060CC9B /* 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 2.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,11 +102,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				9311CD7314B63B2B00AF75D7 /* QuartzCore.framework in Frameworks */,
+				9311CD7214B63B1500AF75D7 /* Foundation.framework in Frameworks */,
+				9311CD6D14B6376400AF75D7 /* CoreAudio.framework in Frameworks */,
+				93BE881614B41063005DD77F /* AVFoundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */,
 				28D801B40F44B63D00FB423F /* CoreData.framework in Frameworks */,
-				93909410142F38090037CE62 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +128,9 @@
 				934912D81435A72700ED3BD0 /* FontSizeViewController.xib */,
 				934916331442D5EE00ED3BD0 /* OverlayView.h */,
 				934916341442D5EE00ED3BD0 /* OverlayView.m */,
+				93BE881014B3D8E8005DD77F /* PlaybackViewController.h */,
+				93BE881114B3D8E8005DD77F /* PlaybackViewController.m */,
+				93BE881214B3D8E8005DD77F /* PlaybackViewController.xib */,
 				93059DFD14A3052B001ECE4D /* RecordingAndPlaybackController.h */,
 				93059DFE14A3052B001ECE4D /* RecordingAndPlaybackController.m */,
 				93059DF814A2DF39001ECE4D /* RecordingViewController.h */,
@@ -183,11 +199,15 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
+				93BE881514B41063005DD77F /* AVFoundation.framework */,
+				9311CD6C14B6376400AF75D7 /* CoreAudio.framework */,
 				28D801B30F44B63D00FB423F /* CoreData.framework */,
+				9311CD7014B63A1700AF75D7 /* CoreFoundation.framework */,
+				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				9390940F142F38090037CE62 /* QuartzCore.framework */,
+				9311CD6E14B639AB00AF75D7 /* Security.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -257,6 +277,7 @@
 				934915C01441785400ED3BD0 /* Default-Portrait.png in Resources */,
 				934915C21441786100ED3BD0 /* Default-Landscape.png in Resources */,
 				93059DFC14A2DF39001ECE4D /* RecordingViewController.xib in Resources */,
+				93BE881414B3D8E8005DD77F /* PlaybackViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,6 +300,7 @@
 				934916351442D5EE00ED3BD0 /* OverlayView.m in Sources */,
 				93059DFB14A2DF39001ECE4D /* RecordingViewController.m in Sources */,
 				93059DFF14A3052C001ECE4D /* RecordingAndPlaybackController.m in Sources */,
+				93BE881314B3D8E8005DD77F /* PlaybackViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +317,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Text_Memory_Prefix.pch;
 				INFOPLIST_FILE = "Text_Memory-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "Text Memory";
 			};
 			name = Debug;
@@ -307,10 +330,43 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Text_Memory_Prefix.pch;
 				INFOPLIST_FILE = "Text_Memory-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "Text Memory";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
+		};
+		9311CD7714B6A5F200AF75D7 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = "Ad Hoc";
+		};
+		9311CD7814B6A5F200AF75D7 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Text_Memory_Prefix.pch;
+				INFOPLIST_FILE = "Text_Memory-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PRODUCT_NAME = "Text Memory";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Ad Hoc";
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -320,7 +376,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -334,7 +390,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -350,6 +406,7 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				9311CD7814B6A5F200AF75D7 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -359,6 +416,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				9311CD7714B6A5F200AF75D7 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

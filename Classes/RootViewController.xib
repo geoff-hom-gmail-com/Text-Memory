@@ -134,7 +134,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 							<object class="IBUISegmentedControl" id="511361295">
 								<reference key="NSNextResponder" ref="421974764"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{281, 8}, {207, 30}}</string>
+								<string key="NSFrame">{{280, 8}, {207, 30}}</string>
 								<reference key="NSSuperview" ref="421974764"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
@@ -146,7 +146,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<object class="NSArray" key="IBSegmentTitles">
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<string>Full Text</string>
-									<string>First Letters</string>
+									<string>Blanks</string>
 								</object>
 								<object class="NSMutableArray" key="IBSegmentWidths">
 									<bool key="EncodedWithXMLCoder">YES</bool>
@@ -5214,10 +5214,6 @@ AAgAAAAIAAIACAACAAAAAgAAAAEAAQABAAE</bytes>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBIPadFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaTouchPlugin.iPhoneOS</string>
-			<real value="1280" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaTouchPlugin.InterfaceBuilder3</string>
 			<integer value="3100" key="NS.object.0"/>

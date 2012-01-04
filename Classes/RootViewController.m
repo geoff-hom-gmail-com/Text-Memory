@@ -32,8 +32,8 @@ NSString *deleteTextTitleString = @"Delete This Text";
 // Title for action-sheet button for editing text.
 NSString *editTextTitleString = @"Edit Current Title and Text";
 
-// Title for segmented control segment for showing first letters.
-NSString *firstLetterTextModeTitleString = @"First Letters";
+// Title for segmented-control segment for showing blanks (underscores).
+NSString *blanksTextModeTitleString = @"Blanks";
 
 // Title for segmented control segment for showing full text.
 NSString *fullTextModeTitleString = @"Full Text";
@@ -58,6 +58,8 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 @property (nonatomic, retain) NSDate *previousSelectedRangeDate;
 
 @property (nonatomic) NSUInteger previousSelectedRangeLocation;
+
+@property (nonatomic, retain) RecordingAndPlaybackController *recordingAndPlaybackController;
 
 // Date when the text view was single-tapped while in first-letter mode.
 @property (nonatomic, retain) NSDate *textViewSingleTapInFirstLetterModeDate;
@@ -119,7 +121,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 @implementation RootViewController
 
 @synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, recordBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
-@synthesize actionSheet, firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
+@synthesize actionSheet, firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, recordingAndPlaybackController, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
 
 - (void)actionSheet:(UIActionSheet *)theActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	
@@ -289,6 +291,8 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	self.popoverController.delegate = nil;
 	[popoverController release];
     [previousSelectedRangeDate release];
+    self.recordingAndPlaybackController.delegate = nil;
+    [recordingAndPlaybackController release];
 	[textViewSingleTapInFirstLetterModeDate release];
     [textViewSelectedRangeIsCorrectDate release];
     
@@ -713,6 +717,26 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	self.topToolbar.userInteractionEnabled = YES;
 }
 
+- (void)recordingAndPlaybackControllerDidStartPlaying:(RecordingAndPlaybackController *)recordingAndPlaybackController {
+    
+    self.recordBarButtonItem.title = @"Recording: Playing";
+}
+
+- (void)recordingAndPlaybackControllerDidStartRecording:(RecordingAndPlaybackController *)recordingAndPlaybackController {
+    
+    self.recordBarButtonItem.title = @"Recording: On";
+}
+
+- (void)recordingAndPlaybackControllerDidStopPlaying:(RecordingAndPlaybackController *)recordingAndPlaybackController {
+    
+    self.recordBarButtonItem.title = @"Recording: Off";
+}
+
+- (void)recordingAndPlaybackControllerDidStopRecording:(RecordingAndPlaybackController *)recordingAndPlaybackController {
+    
+    self.recordBarButtonItem.title = @"Recording: Off";
+}
+
 - (void)removeObservers {
 	
 	[self removeObserver:self forKeyPath:@"currentText"];
@@ -912,11 +936,17 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         
         [self dismissAnyVisiblePopover];
         
-		// Create the view controller for the popover.
-        RecordingAndPlaybackController *aRecordingAndPlaybackController = [[RecordingAndPlaybackController alloc] init];
+        // Check if the view controller exists. If not, make it.
+        if (self.recordingAndPlaybackController == nil) {
+            
+            RecordingAndPlaybackController *aRecordingAndPlaybackController = [[RecordingAndPlaybackController alloc] init];
+            aRecordingAndPlaybackController.delegate = self;
+            self.recordingAndPlaybackController = aRecordingAndPlaybackController;
+            [aRecordingAndPlaybackController release];
+        }
 		
 		// Present popover.
-		[self setPopoverControllerContentViewController:aRecordingAndPlaybackController.navigationController];
+		[self setPopoverControllerContentViewController:self.recordingAndPlaybackController.navigationController];
 		[self.popoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 	}    
 }
@@ -1048,7 +1078,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		self.fullTextSegmentIndex = 0;
 		self.firstLettersSegmentIndex = 1;
 		[self.textToShowSegmentedControl setTitle:fullTextModeTitleString forSegmentAtIndex:self.fullTextSegmentIndex];
-		[self.textToShowSegmentedControl setTitle:firstLetterTextModeTitleString forSegmentAtIndex:self.firstLettersSegmentIndex];
+		[self.textToShowSegmentedControl setTitle:blanksTextModeTitleString forSegmentAtIndex:self.firstLettersSegmentIndex];
 		
 		// Add overlay view on top of all views.
 		CGRect windowMinusBarsFrame = CGRectMake(0, self.currentTextTextView.frame.origin.y, self.view.frame.size.width, self.currentTextTextView.frame.size.height);
@@ -1122,6 +1152,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	
     self.popoverController.delegate = nil;
 	self.popoverController = nil;
+    
+    self.recordingAndPlaybackController.delegate = nil;
+    self.recordingAndPlaybackController = nil;
     
 	self.addTextBarButtonItem = nil;
 	self.bottomToolbar = nil;
