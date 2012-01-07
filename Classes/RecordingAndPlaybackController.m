@@ -107,6 +107,14 @@ NSString *voiceRecordingFilenameString = @"voiceRecording.caf";
         
         UISegmentedControl *aSegmentedControl = [ [UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Recording", @"Playback", nil] ];
         aSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        
+        //testing
+        // light blue
+        UIColor *aMediumLightColor = [UIColor colorWithRed:0 green:0.5 blue:1 alpha:1];
+        // light gray
+        //UIColor *aMediumLightColor = [UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1];
+        aSegmentedControl.tintColor = aMediumLightColor;
+        
         aSegmentedControl.selectedSegmentIndex = 0;
         [aSegmentedControl addTarget:self action:@selector(indexDidChangeForSegmentedControl) forControlEvents:UIControlEventValueChanged];
         self.segmentedControl = aSegmentedControl;

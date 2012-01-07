@@ -39,7 +39,7 @@
 					<object class="IBUIButton" id="574853127">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{40, 65}, {105, 37}}</string>
+						<string key="NSFrame">{{62, 10}, {105, 37}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="736342066"/>
@@ -78,9 +78,10 @@
 					<object class="IBUILabel" id="267026243">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{26, 176}, {211, 21}}</string>
+						<string key="NSFrame">{{10, 55}, {209, 21}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -108,7 +109,7 @@
 					<object class="IBUIButton" id="482289477">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{20, 20}, {78, 37}}</string>
+						<string key="NSFrame">{{10, 10}, {44, 37}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="574853127"/>
@@ -117,7 +118,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">Rewind</string>
+						<string key="IBUINormalTitle">&lt;&lt;</string>
 						<reference key="IBUIHighlightedTitleColor" ref="438843097"/>
 						<reference key="IBUIDisabledTitleColor" ref="363209618"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
@@ -131,7 +132,7 @@
 					<object class="IBUIButton" id="736342066">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{55, 110}, {119, 37}}</string>
+						<string key="NSFrame">{{175, 10}, {44, 37}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="267026243"/>
@@ -140,7 +141,7 @@
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
 						<int key="IBUIButtonType">1</int>
-						<string key="IBUINormalTitle">Fast Forward</string>
+						<string key="IBUINormalTitle">&gt;&gt;</string>
 						<reference key="IBUIHighlightedTitleColor" ref="438843097"/>
 						<reference key="IBUIDisabledTitleColor" ref="363209618"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
@@ -152,7 +153,7 @@
 						<reference key="IBUIFont" ref="97385198"/>
 					</object>
 				</array>
-				<string key="NSFrameSize">{257, 240}</string>
+				<string key="NSFrameSize">{229, 140}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="482289477"/>
@@ -260,10 +261,10 @@
 						<int key="objectID">2</int>
 						<reference key="object" ref="766721923"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="267026243"/>
+							<reference ref="482289477"/>
 							<reference ref="574853127"/>
 							<reference ref="736342066"/>
-							<reference ref="482289477"/>
+							<reference ref="267026243"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>

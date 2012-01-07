@@ -38,6 +38,9 @@ NSString *blanksTextModeTitleString = @"Blanks";
 // Title for segmented control segment for showing full text.
 NSString *fullTextModeTitleString = @"Full Text";
 
+// Title for segmented control segment for showing nothing.
+NSString *nothingTextModeTitleString = @"Nothing";
+
 NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 // Private category for private methods.
@@ -46,11 +49,17 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Once we create this, we'll keep it in memory and just reuse it.
 @property (nonatomic, retain) UIActionSheet *actionSheet;
 
+// In Blanks mode, the string index up through which the full text was last shown.
+@property (nonatomic) NSUInteger blanksModeLocationToShowThrough;
+
 // Segment in segmented control for switching to first-letter mode.
 @property (nonatomic) NSUInteger firstLettersSegmentIndex;
 
 // Segment in segmented control for switching to full-text mode.
 @property (nonatomic) NSUInteger fullTextSegmentIndex;
+
+// Segment in segmented control for switching to mode showing nothing.
+@property (nonatomic) NSUInteger nothingSegmentIndex;
 
 // Once we create this, we'll keep it in memory and just reuse it.
 @property (nonatomic, retain) UIPopoverController *popoverController;
@@ -121,7 +130,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 @implementation RootViewController
 
 @synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, recordBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
-@synthesize actionSheet, firstLettersSegmentIndex, fullTextSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, recordingAndPlaybackController, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
+@synthesize actionSheet, blanksModeLocationToShowThrough, firstLettersSegmentIndex, fullTextSegmentIndex, nothingSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, recordingAndPlaybackController, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
 
 - (void)actionSheet:(UIActionSheet *)theActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	
@@ -172,22 +181,18 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	if (theSegmentedControl.selectedSegmentIndex == self.fullTextSegmentIndex) {
 		
 		[self showFullText];
+        self.currentTextTextView.hidden = NO;
         self.currentTextTextView.editable = NO;
 	} else if (theSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
 		
 		[self showUnderscoresOnly];
+        self.currentTextTextView.hidden = NO;
         self.currentTextTextView.editable = YES;
+	} else if (theSegmentedControl.selectedSegmentIndex == self.nothingSegmentIndex) {
+		
+		self.currentTextTextView.hidden = YES;
+        self.currentTextTextView.editable = NO;
 	}
-}
-
-- (void)dismissAnyVisiblePopover {
-    
-    if (self.popoverController.popoverVisible) {
-        [self.popoverController dismissPopoverAnimated:NO];
-    }
-    if (self.actionSheet.visible) {
-        [self.actionSheet dismissWithClickedButtonIndex:-1 animated:NO];
-    }
 }
 
 - (IBAction)confirmAddText:(id)sender {
@@ -332,6 +337,16 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     // Release any cached data, images, etc. that aren't in use.
 }
 
+- (void)dismissAnyVisiblePopover {
+    
+    if (self.popoverController.popoverVisible) {
+        [self.popoverController dismissPopoverAnimated:NO];
+    }
+    if (self.actionSheet.visible) {
+        [self.actionSheet dismissWithClickedButtonIndex:-1 animated:NO];
+    }
+}
+
 - (void)doSomethingAtSelectedRange {
     
     // If the location is whitespace, do nothing.
@@ -397,6 +412,16 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         
         // Set selected range to start of word.
         //self.currentTextTextView.selectedRange = NSMakeRange(wordRange.location, 0);
+        
+        // Keep track of range to show.
+        NSInteger locationToShowThrough = wordRange.location - 2;
+        if (locationToShowThrough < 0) {
+            
+            self.blanksModeLocationToShowThrough = NSNotFound;
+        } else {
+            
+            self.blanksModeLocationToShowThrough = wordRange.location;
+        }
     } else {
         
         // Show full text from start up through word.
@@ -416,6 +441,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
             startOfNextWhitespace = startOfNextWhitespace - 1;
         }
         //self.currentTextTextView.selectedRange = NSMakeRange(startOfNextWhitespace, 0);
+        
+        // Keep track of range to show.
+        self.blanksModeLocationToShowThrough = endOfWordRange.location;
     }
 }
 
@@ -655,6 +683,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     if (self) {
 		
         // Custom initialization.
+        self.blanksModeLocationToShowThrough = NSNotFound;
     }
     return self;
 }
@@ -748,6 +777,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         
         UIPopoverController *aPopoverController = [[UIPopoverController alloc] initWithContentViewController:theViewController];
         aPopoverController.delegate = self;
+        aPopoverController.passthroughViews = [NSArray arrayWithObject:self.textToShowSegmentedControl];
         self.popoverController = aPopoverController;
         [aPopoverController release];
     } else {
@@ -974,6 +1004,13 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 - (void)showUnderscoresOnly {
 	
     self.currentTextTextView.text = self.currentText.underscoreText;
+    
+    // Show words that were visible last time.
+    if (self.blanksModeLocationToShowThrough != NSNotFound) {
+        
+        self.currentTextTextView.selectedRange = NSMakeRange(self.blanksModeLocationToShowThrough, 0);
+        [self doSomethingAtSelectedRange];
+    }
 }
 
 - (void)textsTableViewControllerDidSelectText:(TextsTableViewController *)sender {
@@ -983,13 +1020,12 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	// Dismissing popover programmatically doesn't call this delegate method. But we do cleanup there, so we need to call it.
 	[self popoverControllerDidDismissPopover:nil];
 	
+    self.blanksModeLocationToShowThrough = NSNotFound;
 	self.currentText = sender.currentText;
 }
 
 - (void)textViewDidChangeSelection:(UITextView *)theTextView {
 	
-    NSLog(@"RVC selection changed to:||%@||", NSStringFromRange(theTextView.selectedRange) );
-    
     // In first-letter mode, the text view is editable to allow a single tap to set the selection range. But we don't want the keyboard to show up, so we'll always resign the first responder.
     if ( (self.textToShowSegmentedControl.selectedSegmentIndex == firstLettersSegmentIndex) && self.currentTextTextView.isFirstResponder) {
         
@@ -1070,15 +1106,21 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		self.currentTextTextView.text = @"";
 		self.bottomToolbar.items = nil;
 	} else {
-	
+
+        UIColor *aLightBlueColor = [UIColor colorWithRed:0 green:0.5 blue:1 alpha:1];
+        self.topToolbar.tintColor = aLightBlueColor;
+        self.bottomToolbar.tintColor = aLightBlueColor;
+        
 		// Start KVO. 
 		[self addObservers];
 		
 		// Set up segmented control for showing first letters.
 		self.fullTextSegmentIndex = 0;
 		self.firstLettersSegmentIndex = 1;
+        self.nothingSegmentIndex = 2;
 		[self.textToShowSegmentedControl setTitle:fullTextModeTitleString forSegmentAtIndex:self.fullTextSegmentIndex];
 		[self.textToShowSegmentedControl setTitle:blanksTextModeTitleString forSegmentAtIndex:self.firstLettersSegmentIndex];
+        [self.textToShowSegmentedControl setTitle:nothingTextModeTitleString forSegmentAtIndex:self.nothingSegmentIndex];
 		
 		// Add overlay view on top of all views.
 		CGRect windowMinusBarsFrame = CGRectMake(0, self.currentTextTextView.frame.origin.y, self.view.frame.size.width, self.currentTextTextView.frame.size.height);
@@ -1086,19 +1128,24 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		anOverlayView.textViewToIgnore = self.currentTextTextView;
 		[self.view addSubview:anOverlayView];
         
+        /*
 		// Add gesture recognizer for double taps in the text margins.
 		UITapGestureRecognizer *aDoubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleMarginDoubleTapGesture:)];
 		aDoubleTapGestureRecognizer.numberOfTapsRequired = 2;
 		[anOverlayView addGestureRecognizer:aDoubleTapGestureRecognizer];
 		[aDoubleTapGestureRecognizer release];
+         */
         
+        /*
         // Add gesture recognizer for single taps in the text margins.
 		UITapGestureRecognizer *aSingleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleMarginSingleTapGesture:)];
 		aSingleTapGestureRecognizer.numberOfTapsRequired = 1;
         [anOverlayView addGestureRecognizer:aSingleTapGestureRecognizer];
 		[aSingleTapGestureRecognizer release];
 		[anOverlayView release];
+         */
         
+        /*
         // Add gesture recognizer for a swipe right.
         UISwipeGestureRecognizer *aSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeRightGesture:) ];
         aSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
@@ -1110,6 +1157,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         aSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
         [self.view addGestureRecognizer:aSwipeGestureRecognizer];
         [aSwipeGestureRecognizer release];
+         */
 		
 		// Align text view so it doesn't appear to shift later.
 		[self maintainRelativeWidthOfTextView:self.currentTextTextView];
@@ -1121,7 +1169,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		self.currentTextTextView.delegate = self;
         
         // Add gesture recognizer: single tap in text view.
-        aSingleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTextViewSingleTapGesture:)];
+        UITapGestureRecognizer *aSingleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTextViewSingleTapGesture:)];
 		aSingleTapGestureRecognizer.numberOfTapsRequired = 1;
         aSingleTapGestureRecognizer.delegate = self;
         [self.currentTextTextView addGestureRecognizer:aSingleTapGestureRecognizer];
