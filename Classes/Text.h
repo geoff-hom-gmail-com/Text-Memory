@@ -25,10 +25,14 @@
 // Return a new instance with the same properties as this one. 
 - (Text *)clone;
 
+// Return the uni-blank text. If not made yet, make it.
+// could change this to uniBlankText and use self.uniBlankText_
+- (NSString *)getUniBlankText;
+
 // Return isDefaultData_ as BOOL.
 - (BOOL)isDefaultData;
 
-// For key-value observing (KVO).
+// For key-value observing (KVO). If the text was changed, then update stuff.
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 
 // Set isDefaultData_ with BOOL.

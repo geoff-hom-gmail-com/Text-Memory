@@ -9,6 +9,7 @@
 #import "DefaultData.h"
 #import "EditTextViewController.h"
 #import "FontSizeViewController.h"
+#import "NSString+Words.h"
 #import "OverlayView.h"
 #import "RecordingAndPlaybackController.h"
 #import "RootViewController.h"
@@ -43,6 +44,9 @@ NSString *nothingTextModeTitleString = @"Nothing";
 
 NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
+// Title for segmented control segment for showing the same number of blanks per word.
+NSString *uniBlanksTextModeTitleString = @"UniBlanks";
+
 // Private category for private methods.
 @interface RootViewController ()
 
@@ -64,9 +68,18 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Once we create this, we'll keep it in memory and just reuse it.
 @property (nonatomic, retain) UIPopoverController *popoverController;
 
+// The string last shown in "Blanks" mode, for the current text.
+@property (nonatomic, retain) NSString *previousBlanksModeString;
+
 @property (nonatomic, retain) NSDate *previousSelectedRangeDate;
 
 @property (nonatomic) NSUInteger previousSelectedRangeLocation;
+
+// I.e., the previous text mode. 
+@property (nonatomic) NSUInteger previousSelectedSegmentIndex;
+
+// The string last shown in uni-blanks mode, for the current text.
+@property (nonatomic, retain) NSString *previousUniBlankModeString;
 
 @property (nonatomic, retain) RecordingAndPlaybackController *recordingAndPlaybackController;
 
@@ -75,6 +88,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 // Date when the text view's selected range changed to the correct value.
 @property (nonatomic, retain) NSDate *textViewSelectedRangeIsCorrectDate;
+
+// Segment in segmented control for switching to mode showing the same number of blanks per word.
+@property (nonatomic) NSUInteger uniBlanksSegmentIndex;
 
 // Add a new text and show it.
 - (void)addANewText;
@@ -119,8 +135,15 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Show only underscores for each word (plus punctuation).
 - (void)showUnderscoresOnly;
 
+// Show the same number of underscores for each word (plus punctuation).
+- (void)showUniBlanks;
+
 // Return whether the text view's current selected range is correct.
 - (BOOL)textViewSelectedRangeIsCorrect;
+
+// ?
+// assume selectedWordRange is in a word (i.e. not whitespace)
+- (void)uniBlanksModeShowOrHideWords:(NSRange)selectedWordRange;
 
 // Make sure the correct title and text is showing. (And that the text's mode is correct.)
 - (void)updateTitleAndTextShowing;
@@ -130,7 +153,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 @implementation RootViewController
 
 @synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, recordBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
-@synthesize actionSheet, blanksModeLocationToShowThrough, firstLettersSegmentIndex, fullTextSegmentIndex, nothingSegmentIndex, popoverController, previousSelectedRangeDate, previousSelectedRangeLocation, recordingAndPlaybackController, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate;
+@synthesize actionSheet, blanksModeLocationToShowThrough, firstLettersSegmentIndex, fullTextSegmentIndex, nothingSegmentIndex, popoverController, previousBlanksModeString, previousSelectedRangeDate, previousSelectedRangeLocation, previousSelectedSegmentIndex, previousUniBlankModeString, recordingAndPlaybackController, textViewSingleTapInFirstLetterModeDate, textViewSelectedRangeIsCorrectDate, uniBlanksSegmentIndex;
 
 - (void)actionSheet:(UIActionSheet *)theActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	
@@ -177,6 +200,14 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 }
 
 - (IBAction)changeTextModeToShow:(UISegmentedControl *)theSegmentedControl {
+    
+    if (self.previousSelectedSegmentIndex == self.firstLettersSegmentIndex) {
+        
+        self.previousBlanksModeString = self.currentTextTextView.text;
+    } else if (self.previousSelectedSegmentIndex == self.uniBlanksSegmentIndex) {
+        
+        self.previousUniBlankModeString = self.currentTextTextView.text;
+    }
 
 	if (theSegmentedControl.selectedSegmentIndex == self.fullTextSegmentIndex) {
 		
@@ -192,7 +223,13 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		
 		self.currentTextTextView.hidden = YES;
         self.currentTextTextView.editable = NO;
-	}
+	} else if (theSegmentedControl.selectedSegmentIndex == self.uniBlanksSegmentIndex) {
+        
+        [self showUniBlanks];
+        self.currentTextTextView.hidden = NO;
+        self.currentTextTextView.editable = YES;
+    }
+    self.previousSelectedSegmentIndex = theSegmentedControl.selectedSegmentIndex;
 }
 
 - (IBAction)confirmAddText:(id)sender {
@@ -295,7 +332,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     [actionSheet release];
 	self.popoverController.delegate = nil;
 	[popoverController release];
+    [previousBlanksModeString release];
     [previousSelectedRangeDate release];
+    [previousUniBlankModeString release];
     self.recordingAndPlaybackController.delegate = nil;
     [recordingAndPlaybackController release];
 	[textViewSingleTapInFirstLetterModeDate release];
@@ -347,6 +386,126 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     }
 }
 
+- (void)blanksModeShowOrHideWords:(NSUInteger)selectedIndex {
+    
+    // If the location is in a word with underscores, then reveal the full text up through that word.
+    // If the location is in a word without underscores (i.e. full text), then show underscores (i.e., hide text) from (and including) that word to the end.
+    // To detect underscores, we'll first search forward and backward until whitespace to get the word range.
+    
+    // Check from selected index to end. Since we want the end of the word and not actual whitespace, subtract one from the end.
+    NSCharacterSet *whitespaceAndNewlineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSRange rangeToCheck = NSMakeRange(selectedIndex, self.currentTextTextView.text.length - selectedIndex);
+    NSRange endOfWordRange = [self.currentTextTextView.text rangeOfCharacterFromSet:whitespaceAndNewlineCharacterSet options:0 range:rangeToCheck];
+    if (endOfWordRange.location == NSNotFound) {
+        
+        endOfWordRange.location = self.currentTextTextView.text.length - 1;
+    } else {
+        
+        endOfWordRange.location = endOfWordRange.location - 1;
+    }
+    
+    // Check from start up to selected index. Since we want the start of the word and not actual whitespace, add one to the start.
+    rangeToCheck = NSMakeRange(0, selectedIndex);
+    NSRange startOfWordRange = [self.currentTextTextView.text rangeOfCharacterFromSet:whitespaceAndNewlineCharacterSet options:NSBackwardsSearch range:rangeToCheck];
+    if (startOfWordRange.location == NSNotFound) {
+        
+        startOfWordRange.location = 0;
+    } else {
+        
+        startOfWordRange.location = startOfWordRange.location + 1;
+    }
+    
+    NSRange wordRange = NSMakeRange(startOfWordRange.location, endOfWordRange.location - startOfWordRange.location + 1);
+    NSLog(@"word range:%@", NSStringFromRange(wordRange) );
+    NSCharacterSet *underscoreCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"_"];
+    NSRange underscoreRange = [self.currentTextTextView.text rangeOfCharacterFromSet:underscoreCharacterSet options:0 range:wordRange];
+    NSRange targetRange;
+    NSString *newString;
+    NSString *textWithReplacementString;
+    if (underscoreRange.location == NSNotFound) {
+        
+        // Show underscores from word through end.
+        NSLog(@"hide text");
+        
+        targetRange = NSMakeRange(wordRange.location, self.currentTextTextView.text.length - wordRange.location);
+        newString = [self.currentText.underscoreText substringWithRange:targetRange];
+        textWithReplacementString = [self.currentTextTextView.text stringByReplacingCharactersInRange:targetRange withString:newString];
+        self.currentTextTextView.text = textWithReplacementString;
+        
+        // Set selected range to start of word.
+        //self.currentTextTextView.selectedRange = NSMakeRange(wordRange.location, 0);
+        
+        // Keep track of range to show.
+        NSInteger locationToShowThrough = wordRange.location - 2;
+        if (locationToShowThrough < 0) {
+            
+            self.blanksModeLocationToShowThrough = NSNotFound;
+        } else {
+            
+            self.blanksModeLocationToShowThrough = wordRange.location;
+        }
+    } else {
+        
+        // Show full text from start up through word.
+        NSLog(@"reveal text");
+        
+        targetRange = NSMakeRange(0, endOfWordRange.location + 1);
+        newString = [self.currentText.text substringWithRange:targetRange];
+        textWithReplacementString = [self.currentTextTextView.text stringByReplacingCharactersInRange:targetRange withString:newString];
+        
+        self.currentTextTextView.text = textWithReplacementString;
+        
+        // Set selected range to just after end of word.
+        
+        NSUInteger startOfNextWhitespace = endOfWordRange.location + 1;
+        if (startOfNextWhitespace == self.currentTextTextView.text.length) {
+            
+            startOfNextWhitespace = startOfNextWhitespace - 1;
+        }
+        //self.currentTextTextView.selectedRange = NSMakeRange(startOfNextWhitespace, 0);
+        
+        // Keep track of range to show.
+        self.blanksModeLocationToShowThrough = endOfWordRange.location;
+    }
+}
+
+- (void)uniBlanksModeShowOrHideWords:(NSRange)selectedWordRange {
+    
+    // The resulting text will have some full text followed by some uni-blank text. Determine the index of the start of the uni-blank text. Then assemble the text.
+    
+    // If the selected word has blanks, then everything up to and including that word will be shown, so the first blank will be the start of the next word. If the selected word doesn't have blanks, then that word and everything after will be hidden, so the first blank will be the start of that word. 
+    NSUInteger startOfBlanksInTextViewTextIndex;
+    NSString *selectedWord = [self.currentTextTextView.text substringWithRange:selectedWordRange];
+    BOOL selectedWordHasBlanks = NO;
+    if ([selectedWord rangeOfString:@"_"].location != NSNotFound) {
+        
+        selectedWordHasBlanks = YES;
+    }
+    if (selectedWordHasBlanks) {
+        
+        // First letter in word after selected word.
+        startOfBlanksInTextViewTextIndex = [self.currentTextTextView.text startOfNthWord:1 afterRange:selectedWordRange];
+        
+    } else {
+        
+        // First letter in selected word.
+        startOfBlanksInTextViewTextIndex = selectedWordRange.location;
+    }
+    
+    // Determine number of words in text up to the first blank. Get that many words from the full text. For the uni-blank text, go past that many words, then get the rest of the uni-blank text.
+    
+    NSUInteger nonBlankWordsUInteger = [[self.currentTextTextView.text substringToIndex:startOfBlanksInTextViewTextIndex] wordCount];
+    NSUInteger startOfBlanksMappedToFullTextIndex = [self.currentText.text startOfNthWord:(nonBlankWordsUInteger + 1)];
+    NSString *fullTextSubstring = [self.currentText.text substringToIndex:startOfBlanksMappedToFullTextIndex];
+    NSMutableString *newTextMutableString = [NSMutableString stringWithString:fullTextSubstring];
+    NSUInteger startOfBlanksMappedToUniBlankTextIndex = [[self.currentText getUniBlankText] startOfNthWord:(nonBlankWordsUInteger + 1)];
+    NSString *uniBlankSubstring = [[self.currentText getUniBlankText] substringFromIndex:startOfBlanksMappedToUniBlankTextIndex];
+    [newTextMutableString appendString:uniBlankSubstring];
+    
+    self.currentTextTextView.text = newTextMutableString;
+    [self.currentTextTextView scrollRangeToVisible:NSMakeRange(fullTextSubstring.length, 0)];
+}
+
 - (void)doSomethingAtSelectedRange {
     
     // If the location is whitespace, do nothing.
@@ -366,6 +525,17 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
             return;
         }
     }
+    
+    if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
+        
+        [self blanksModeShowOrHideWords:selectedIndex];
+    } else if (self.textToShowSegmentedControl.selectedSegmentIndex == self.uniBlanksSegmentIndex) {
+        
+        NSRange selectedWordRange = [self.currentTextTextView.text rangeOfWordAtIndex:selectedIndex];
+        [self uniBlanksModeShowOrHideWords:selectedWordRange];
+    }
+    
+    /*
     
     // If the location is in a word with underscores, then reveal the full text up through that word.
     // If the location is in a word without underscores (i.e. full text), then show underscores (i.e., hide text) from (and including) that word to the end.
@@ -445,6 +615,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         // Keep track of range to show.
         self.blanksModeLocationToShowThrough = endOfWordRange.location;
     }
+    */
 }
 
 - (void)editCurrentText {
@@ -494,6 +665,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 - (void)editTextViewControllerDidFinishEditing:(EditTextViewController *)sender {
 	
+    NSLog(@"RVC editTextViewControllerDidFinishEditing");
 	self.currentTextTextView.contentOffset = sender.contentOffset;
 	[self updateTitleAndTextShowing];
 }
@@ -625,6 +797,13 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
             
             [self showFullTextForSelection];
         } */
+    }
+    
+    if (self.textToShowSegmentedControl.selectedSegmentIndex == self.uniBlanksSegmentIndex) {
+        
+        NSLog(@"uniblanks tap detected");
+        self.textViewSingleTapInFirstLetterModeDate = [NSDate date];
+        [self considerDoingSomethingAtSelectedRange];
     }
 }
 
@@ -1003,13 +1182,31 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 
 - (void)showUnderscoresOnly {
 	
-    self.currentTextTextView.text = self.currentText.underscoreText;
+    if (self.previousBlanksModeString != nil) {
+        
+        self.currentTextTextView.text = self.previousBlanksModeString;
+    } else {
+        
+        self.currentTextTextView.text = self.currentText.underscoreText;
+    }
     
+    /*
     // Show words that were visible last time.
     if (self.blanksModeLocationToShowThrough != NSNotFound) {
         
         self.currentTextTextView.selectedRange = NSMakeRange(self.blanksModeLocationToShowThrough, 0);
         [self doSomethingAtSelectedRange];
+    }*/
+}
+
+- (void)showUniBlanks {
+    
+    if (self.previousUniBlankModeString != nil) {
+        
+        self.currentTextTextView.text = self.previousUniBlankModeString;
+    } else {
+        
+        self.currentTextTextView.text = [self.currentText getUniBlankText];
     }
 }
 
@@ -1020,14 +1217,16 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	// Dismissing popover programmatically doesn't call this delegate method. But we do cleanup there, so we need to call it.
 	[self popoverControllerDidDismissPopover:nil];
 	
-    self.blanksModeLocationToShowThrough = NSNotFound;
+    //self.blanksModeLocationToShowThrough = NSNotFound;
+    self.previousBlanksModeString = nil;
+    self.previousUniBlankModeString = nil;
 	self.currentText = sender.currentText;
 }
 
 - (void)textViewDidChangeSelection:(UITextView *)theTextView {
 	
     // In first-letter mode, the text view is editable to allow a single tap to set the selection range. But we don't want the keyboard to show up, so we'll always resign the first responder.
-    if ( (self.textToShowSegmentedControl.selectedSegmentIndex == firstLettersSegmentIndex) && self.currentTextTextView.isFirstResponder) {
+    if ( ( (self.textToShowSegmentedControl.selectedSegmentIndex == firstLettersSegmentIndex) || (self.textToShowSegmentedControl.selectedSegmentIndex == uniBlanksSegmentIndex) ) && self.currentTextTextView.isFirstResponder) {
         
         [self.currentTextTextView resignFirstResponder];
     }
@@ -1087,9 +1286,16 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 - (void)updateTitleAndTextShowing {
 	
 	self.titleLabel.text = self.currentText.title;
+    self.previousBlanksModeString = nil;
+    self.previousUniBlankModeString = nil;
 	if (self.textToShowSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
-		[self showUnderscoresOnly];
-	} else {
+        
+        [self showUnderscoresOnly];
+	} else if (self.textToShowSegmentedControl.selectedSegmentIndex == self.uniBlanksSegmentIndex) {
+        
+        [self showUniBlanks];
+    } else {
+        
 		[self showFullText];
 	}
 }
@@ -1118,23 +1324,17 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 		self.fullTextSegmentIndex = 0;
 		self.firstLettersSegmentIndex = 1;
         self.nothingSegmentIndex = 2;
+        self.uniBlanksSegmentIndex = 3;
 		[self.textToShowSegmentedControl setTitle:fullTextModeTitleString forSegmentAtIndex:self.fullTextSegmentIndex];
 		[self.textToShowSegmentedControl setTitle:blanksTextModeTitleString forSegmentAtIndex:self.firstLettersSegmentIndex];
         [self.textToShowSegmentedControl setTitle:nothingTextModeTitleString forSegmentAtIndex:self.nothingSegmentIndex];
+        [self.textToShowSegmentedControl setTitle:uniBlanksTextModeTitleString forSegmentAtIndex:self.uniBlanksSegmentIndex];
 		
 		// Add overlay view on top of all views.
 		CGRect windowMinusBarsFrame = CGRectMake(0, self.currentTextTextView.frame.origin.y, self.view.frame.size.width, self.currentTextTextView.frame.size.height);
 		OverlayView *anOverlayView = [[OverlayView alloc] initWithFrame:windowMinusBarsFrame];
 		anOverlayView.textViewToIgnore = self.currentTextTextView;
 		[self.view addSubview:anOverlayView];
-        
-        /*
-		// Add gesture recognizer for double taps in the text margins.
-		UITapGestureRecognizer *aDoubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleMarginDoubleTapGesture:)];
-		aDoubleTapGestureRecognizer.numberOfTapsRequired = 2;
-		[anOverlayView addGestureRecognizer:aDoubleTapGestureRecognizer];
-		[aDoubleTapGestureRecognizer release];
-         */
         
         /*
         // Add gesture recognizer for single taps in the text margins.
@@ -1174,15 +1374,6 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         aSingleTapGestureRecognizer.delegate = self;
         [self.currentTextTextView addGestureRecognizer:aSingleTapGestureRecognizer];
 		[aSingleTapGestureRecognizer release];
-        
-        /*
-        // Add gesture recognizer for double taps in the text view.
-        aDoubleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTextViewDoubleTapGesture:)];
-        aDoubleTapGestureRecognizer.numberOfTapsRequired = 2;
-        aDoubleTapGestureRecognizer.delegate = self;
-		[self.currentTextTextView addGestureRecognizer:aDoubleTapGestureRecognizer];
-        [aDoubleTapGestureRecognizer release];      
-         */
 	}
 }
 

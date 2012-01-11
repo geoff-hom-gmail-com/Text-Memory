@@ -12,6 +12,9 @@
 // Private category for private methods.
 @interface Text ()
 
+// The text, substituted with the same number of blanks per word, and preserving punctuation (except apostrophes).
+@property (nonatomic, retain) NSString *uniBlankText;
+
 // Start key-value observing.
 - (void)addObservers;
 
@@ -27,6 +30,9 @@
 // Create text showing only underscores for each letter. Retain punctuation.
 - (NSString *)createUnderscoreText;
 
+// Make the uni-blank text.
+- (NSString *)makeUniBlankText;
+
 // Stop key-value observing.
 - (void)removeObservers;
 
@@ -39,6 +45,7 @@
 @implementation Text 
 
 @dynamic firstLetterText, isDefaultData_, text, title, underscoreText;
+@synthesize uniBlankText;
 
 - (void)addObservers {
 
@@ -177,20 +184,107 @@
 	return aMutableFirstLetterText;
 }
 
+- (void)dealloc {
+    
+    [uniBlankText release];
+    [super dealloc];
+}
+
+- (NSString *)getUniBlankText {
+    
+    if (self.uniBlankText == nil) {
+        
+        self.uniBlankText = [self makeUniBlankText];
+    }
+    return self.uniBlankText;
+}
+
 - (BOOL)isDefaultData {
 	
 	return [self.isDefaultData_ boolValue];
 }
 
+- (NSString *)makeUniBlankText {
+    
+    // Each word will be replaced by this string. 
+    NSString *blanksString = @"__";
+	
+    //time this
+    NSLog(@"starting makeUniBlankText");
+    
+    // Go through the text to build the uni-blank text. If a letter (or apostrophe), use the number of blanks per word, then ignore letters (and apostrophes) until a non-letter (and non-apostrophe). Otherwise (e.g., whitespace, other punctuation), use that.
+    
+    // Make a non-mutable character set of letters and an apostrophe.
+    NSMutableCharacterSet *letterEtAlMutableCharacterSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+	[letterEtAlMutableCharacterSet addCharactersInString:@"'"];
+	NSCharacterSet *letterEtAlCharacterSet = [letterEtAlMutableCharacterSet copy];
+	[letterEtAlMutableCharacterSet release];
+    
+	NSMutableString *aUniBlankTextMutableString = [NSMutableString stringWithCapacity:self.text.length];
+	unichar character;
+	NSString *characterToAddString;
+	BOOL addBlanks;
+    BOOL currentCharacterIsLetter;
+	BOOL previousCharacterWasLetter = NO;
+    BOOL skip;
+	for (int i = 0; i < self.text.length; i++) {
+		
+		currentCharacterIsLetter = NO;
+		character = [self.text characterAtIndex:i];
+		if ( [letterEtAlCharacterSet characterIsMember:character] ) {
+			currentCharacterIsLetter = YES;
+		}
+		
+        skip = NO;
+		addBlanks = NO;
+		if (currentCharacterIsLetter) {
+            
+            if (previousCharacterWasLetter) {
+                
+                skip = YES;
+            } else {
+                
+                addBlanks = YES;
+            }
+        }
+        
+        // Add characters, if any.
+        if (skip) {
+            
+            ;
+        } else if (addBlanks) {
+            
+			[aUniBlankTextMutableString appendString:blanksString];
+		} else {
+            
+			characterToAddString = [NSString stringWithCharacters:&character length:1];
+			[aUniBlankTextMutableString appendString:characterToAddString];
+		}	
+        
+        // Set flags for next run through loop.
+        if (currentCharacterIsLetter) {
+            
+            previousCharacterWasLetter = YES;
+		} else {
+            
+            previousCharacterWasLetter = NO;
+        }
+	}
+	[letterEtAlCharacterSet release];
+    
+    NSLog(@"done makeUniBlankText");
+    return aUniBlankTextMutableString;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	
-	// If the text was changed, then update the first-letter text.
-	// If the text was changed, then update the underscore text.
+	// If the text was changed, then update the text for each text mode.
 	if ([keyPath isEqualToString:@"text"]) {
 		
 		NSLog(@"Text oVFKP: text changed.");
 		self.firstLetterText = [self createFirstLetterText];
         self.underscoreText = [self createUnderscoreText];
+        self.uniBlankText = nil;
 	}
 }
 
@@ -204,7 +298,7 @@
 	
 	self.isDefaultData_ = [NSNumber numberWithBool:value];
 }
- 
+
 - (void)willTurnIntoFault {
 	
 	[super willTurnIntoFault];

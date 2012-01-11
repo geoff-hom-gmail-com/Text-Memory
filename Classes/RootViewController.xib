@@ -46,10 +46,10 @@
 					<object class="IBUITextView" id="523392110">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">277</int>
-						<string key="NSFrame">{{177, 44}, {414, 916}}</string>
+						<string key="NSFrame">{{153, 45}, {465, 916}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="421974764"/>
+						<reference key="NSNextKeyView"/>
 						<object class="NSColor" key="IBUIBackgroundColor" id="774121871">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
@@ -69,11 +69,11 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 							<string key="name">CourierNewPSMT</string>
 							<string key="family">Courier New</string>
 							<int key="traits">0</int>
-							<double key="pointSize">17</double>
+							<double key="pointSize">19</double>
 						</object>
 						<object class="NSFont" key="IBUIFont">
 							<string key="NSName">CourierNewPSMT</string>
-							<double key="NSSize">17</double>
+							<double key="NSSize">19</double>
 							<int key="NSfFlags">16</int>
 						</object>
 					</object>
@@ -141,20 +141,22 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<string key="NSFrame">{{280, 8}, {207, 30}}</string>
 								<reference key="NSSuperview" ref="421974764"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="523392110"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBSegmentControlStyle">2</int>
-								<int key="IBNumberOfSegments">3</int>
+								<int key="IBNumberOfSegments">4</int>
 								<int key="IBSelectedSegmentIndex">0</int>
 								<object class="NSArray" key="IBSegmentTitles">
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<string>Full Text</string>
 									<string>Blanks</string>
 									<string>Nothing</string>
+									<string>UniBlanks</string>
 								</object>
 								<object class="NSMutableArray" key="IBSegmentWidths">
 									<bool key="EncodedWithXMLCoder">YES</bool>
+									<real value="0.0"/>
 									<real value="0.0"/>
 									<real value="0.0"/>
 									<real value="0.0"/>
@@ -164,9 +166,11 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 									<boolean value="YES"/>
 									<boolean value="YES"/>
 									<boolean value="YES"/>
+									<boolean value="YES"/>
 								</object>
 								<object class="NSMutableArray" key="IBSegmentContentOffsets">
 									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>{0, 0}</string>
 									<string>{0, 0}</string>
 									<string>{0, 0}</string>
 									<string>{0, 0}</string>
@@ -174,6 +178,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<object class="NSMutableArray" key="IBSegmentImages">
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<object class="NSNull" id="4"/>
+									<reference ref="4"/>
 									<reference ref="4"/>
 									<reference ref="4"/>
 								</object>
@@ -238,7 +243,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<string key="NSFrame">{{200, 9}, {368, 25}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="523392110"/>
+						<reference key="NSNextKeyView" ref="421974764"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -446,8 +451,8 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="754082218"/>
 							<reference ref="635371483"/>
-							<reference ref="523392110"/>
 							<reference ref="421974764"/>
+							<reference ref="523392110"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -588,6 +593,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 					<string>6.IBPluginDependency</string>
 					<string>61.IBPluginDependency</string>
 					<string>63.IBPluginDependency</string>
+					<string>63.IUISegmentedControlInspectorSelectedSegmentMetadataKey</string>
 					<string>64.IBPluginDependency</string>
 					<string>65.IBPluginDependency</string>
 					<string>67.IBPluginDependency</string>
@@ -611,12 +617,12 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						</object>
 						<object class="IBUserGuide">
 							<reference key="view" ref="766721923"/>
-							<double key="location">185</double>
+							<double key="location">163</double>
 							<int key="affinity">0</int>
 						</object>
 						<object class="IBUserGuide">
 							<reference key="view" ref="766721923"/>
-							<double key="location">177</double>
+							<double key="location">153</double>
 							<int key="affinity">0</int>
 						</object>
 						<object class="IBUserGuide">
@@ -647,6 +653,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<integer value="3"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

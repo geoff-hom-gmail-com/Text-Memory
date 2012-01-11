@@ -28,6 +28,7 @@
 		934915C01441785400ED3BD0 /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = 934915BF1441785400ED3BD0 /* Default-Portrait.png */; };
 		934915C21441786100ED3BD0 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 934915C11441786100ED3BD0 /* Default-Landscape.png */; };
 		934916351442D5EE00ED3BD0 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 934916341442D5EE00ED3BD0 /* OverlayView.m */; };
+		936F74E114BF4584003C79A7 /* NSString+Words.m in Sources */ = {isa = PBXBuildFile; fileRef = 936F74E014BF4584003C79A7 /* NSString+Words.m */; };
 		93908AD9142901960037CE62 /* DefaultData.m in Sources */ = {isa = PBXBuildFile; fileRef = 93908AD8142901960037CE62 /* DefaultData.m */; };
 		93908B2D142911D80037CE62 /* default-data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93908B2C142911D80037CE62 /* default-data.plist */; };
 		93908B7114291A570037CE62 /* defaultDataStore.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 93908B7014291A570037CE62 /* defaultDataStore.sqlite */; };
@@ -74,6 +75,8 @@
 		934915C11441786100ED3BD0 /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		934916331442D5EE00ED3BD0 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
 		934916341442D5EE00ED3BD0 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
+		936F74DF14BF4584003C79A7 /* NSString+Words.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSString+Words.h"; sourceTree = "<group>"; };
+		936F74E014BF4584003C79A7 /* NSString+Words.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Words.m"; sourceTree = "<group>"; };
 		93908AD7142901960037CE62 /* DefaultData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultData.h; sourceTree = "<group>"; };
 		93908AD8142901960037CE62 /* DefaultData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultData.m; sourceTree = "<group>"; };
 		93908B2C142911D80037CE62 /* default-data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "default-data.plist"; sourceTree = "<group>"; };
@@ -126,6 +129,8 @@
 				934912D61435A72700ED3BD0 /* FontSizeViewController.h */,
 				934912D71435A72700ED3BD0 /* FontSizeViewController.m */,
 				934912D81435A72700ED3BD0 /* FontSizeViewController.xib */,
+				936F74DF14BF4584003C79A7 /* NSString+Words.h */,
+				936F74E014BF4584003C79A7 /* NSString+Words.m */,
 				934916331442D5EE00ED3BD0 /* OverlayView.h */,
 				934916341442D5EE00ED3BD0 /* OverlayView.m */,
 				93BE881014B3D8E8005DD77F /* PlaybackViewController.h */,
@@ -301,6 +306,7 @@
 				93059DFB14A2DF39001ECE4D /* RecordingViewController.m in Sources */,
 				93059DFF14A3052C001ECE4D /* RecordingAndPlaybackController.m in Sources */,
 				93BE881314B3D8E8005DD77F /* PlaybackViewController.m in Sources */,
+				936F74E114BF4584003C79A7 /* NSString+Words.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
