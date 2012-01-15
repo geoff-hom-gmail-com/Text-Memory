@@ -135,16 +135,23 @@ NSString *voiceRecordingFilenameString = @"voiceRecording.caf";
     [self.delegate recordingAndPlaybackControllerDidStopPlaying:self];
 }
 
+- (void)recordingViewControllerDidPauseRecording:(RecordingViewController *)recordingViewController {
+    
+    [self.delegate recordingAndPlaybackControllerDidPauseRecording:self];
+}
+
 - (void)recordingViewControllerDidStartRecording:(RecordingViewController *)recordingViewController {
     
+    // Since there's a new recording, the playback view should be disabled until the recording is done.
+    [self.playbackViewController clearAudioPlayer];
+    [self.segmentedControl setEnabled:NO forSegmentAtIndex:1];
     [self.delegate recordingAndPlaybackControllerDidStartRecording:self];
 }
 
 - (void)recordingViewControllerDidStopRecording:(RecordingViewController *)recordingViewController {
     
-    // stop playback here or when starting recording? try this first.
-    self.playbackViewController.audioPlayer = nil;
-    
+    // Re-enable access to playback view.
+    [self.segmentedControl setEnabled:YES forSegmentAtIndex:1];
     [self.delegate recordingAndPlaybackControllerDidStopRecording:self];
 }
 

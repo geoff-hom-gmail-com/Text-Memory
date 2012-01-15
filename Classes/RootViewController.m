@@ -207,6 +207,10 @@ NSString *uniBlanksTextModeTitleString = @"UniBlanks";
     } else if (self.previousSelectedSegmentIndex == self.uniBlanksSegmentIndex) {
         
         self.previousUniBlankModeString = self.currentTextTextView.text;
+        //self.previousVisibleRange = ??;
+    } else if (self.previousSelectedSegmentIndex == self.fullTextSegmentIndex) {
+        
+        //self.previousVisibleRange = ??;
     }
 
 	if (theSegmentedControl.selectedSegmentIndex == self.fullTextSegmentIndex) {
@@ -214,6 +218,9 @@ NSString *uniBlanksTextModeTitleString = @"UniBlanks";
 		[self showFullText];
         self.currentTextTextView.hidden = NO;
         self.currentTextTextView.editable = NO;
+        
+        // Adjust content offset to match full-text offset.
+        //[self.currentTextTextView scrollRangeToVisible:self.previousVisibleRange];
 	} else if (theSegmentedControl.selectedSegmentIndex == self.firstLettersSegmentIndex) {
 		
 		[self showUnderscoresOnly];
@@ -228,6 +235,9 @@ NSString *uniBlanksTextModeTitleString = @"UniBlanks";
         [self showUniBlanks];
         self.currentTextTextView.hidden = NO;
         self.currentTextTextView.editable = YES;
+        
+        // Adjust content offset to match full-text offset.
+        //[self.currentTextTextView scrollRangeToVisible:self.previousVisibleRange];
     }
     self.previousSelectedSegmentIndex = theSegmentedControl.selectedSegmentIndex;
 }
@@ -923,6 +933,12 @@ NSString *uniBlanksTextModeTitleString = @"UniBlanks";
 	
 	// Re-enable corresponding toolbar. (Currently, the only popover controller that should call this method is for the Texts button.)
 	self.topToolbar.userInteractionEnabled = YES;
+}
+
+// RecordingAndPlaybackControllerDelegate method. Since playback paused, show that in the button for the popover.
+- (void)recordingAndPlaybackControllerDidPauseRecording:(RecordingAndPlaybackController *)theRecordingAndPlaybackController {
+    
+    self.recordBarButtonItem.title = @"Recording: Paused";
 }
 
 - (void)recordingAndPlaybackControllerDidStartPlaying:(RecordingAndPlaybackController *)recordingAndPlaybackController {

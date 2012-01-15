@@ -12,6 +12,9 @@
 
 @protocol RecordingViewControllerDelegate
 
+// Sent after recording has been paused.
+- (void)recordingViewControllerDidPauseRecording:(RecordingViewController *)sender;
+
 // Sent after recording has started.
 - (void)recordingViewControllerDidStartRecording:(RecordingViewController *)sender;
 
@@ -26,7 +29,7 @@
 
 @property (nonatomic, assign) id <RecordingViewControllerDelegate> delegate;
 
-@property (nonatomic, retain) IBOutlet UIButton *startButton;
+@property (nonatomic, retain) IBOutlet UIButton *recordOrPauseButton;
 
 // Label for showing recording status.
 @property (nonatomic, retain) IBOutlet UILabel *statusLabel;
@@ -36,7 +39,8 @@
 // URL of the voice recording to play.
 @property (nonatomic, retain) NSURL *voiceRecordingURL;
 
-- (IBAction)startRecording;
+// If not recording, start. Else, pause recording.
+- (IBAction)recordOrPause;
 
 - (IBAction)stopRecording;
 

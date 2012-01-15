@@ -12,27 +12,62 @@
 // Private category for private methods.
 @interface PlaybackViewController ()
 
+// Whether the audio player was playing when the user moved the slider.
+@property (nonatomic) BOOL audioPlayerWasPlaying;
+
+// Start of status label, noting whether playing or paused (to user).
+@property (nonatomic, retain) NSString *playingOrPausedString;
+
+// Repeating timer to update slider thumb with current time.
+@property (nonatomic, retain) NSTimer *sliderTimer;
+
 @end
 
 @implementation PlaybackViewController
 
-@synthesize audioPlayer, delegate, fastForwardButton, playButton, rewindButton, testLabel, voiceRecordingURL;
+@synthesize audioPlayer, delegate, playheadSlider, playOrPauseButton, stopButton, statusLabel, voiceRecordingURL;
+@synthesize audioPlayerWasPlaying, playingOrPausedString, sliderTimer;
+
+- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player {
+    
+    [self.sliderTimer invalidate];
+    self.playingOrPausedString = @"Paused at";
+    [self.delegate playbackViewControllerDidStopPlaying:self];
+}
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     
-    self.testLabel.text = @"Playback done.";
-    self.rewindButton.enabled = NO;
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    
+    [self.sliderTimer invalidate];
+    self.statusLabel.text = [NSString stringWithFormat:@"Duration: %.0f sec.", 
+        self.audioPlayer.duration];
+    self.playingOrPausedString = @"Paused at";
+    self.stopButton.enabled = NO;
+    self.playheadSlider.value = 0;
     [self.delegate playbackViewControllerDidStopPlaying:self];
+}
+
+- (void)clearAudioPlayer {
+    
+    [self.audioPlayer stop];
+    [self.sliderTimer invalidate];
+    self.audioPlayer.delegate = nil;
+    self.audioPlayer = nil;
 }
 
 - (void)dealloc {
 	
+    self.audioPlayer.delegate = nil;
     [audioPlayer release];
-    [fastForwardButton release];
-    [playButton release];
-    [rewindButton release];
-    [testLabel release];
+    [playheadSlider release];
+    [playOrPauseButton release];
+    [stopButton release];
+    [statusLabel release];
     [voiceRecordingURL release];
+    
+    [playingOrPausedString release];
+    [sliderTimer release];
     
     [super dealloc];
 }
@@ -45,38 +80,84 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)fastForward {
+- (IBAction)handleSliderReleased:(UISlider *)theSlider {
     
-    ;
+    if (self.audioPlayerWasPlaying) {
+        
+        [self playOrPause];
+    }
+}
+
+- (IBAction)handleSliderTouchedDown:(UISlider *)theSlider {
+    
+    if (self.audioPlayer.playing) {
+        
+        [self.audioPlayer pause];
+        [self.sliderTimer invalidate];
+        self.audioPlayerWasPlaying = YES;
+    } else {
+        
+        self.audioPlayerWasPlaying = NO;
+    }
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        
         // Custom initialization
+        self.playingOrPausedString = @"Paused at";
     }
     return self;
 }
 
-- (IBAction)playOrPause {
+- (IBAction)movePlayhead:(UISlider *)theSlider {
     
+    // If the current time is set to the duration or more, then the current time automatically becomes 0. So do something only if the slider value is less than the duration.
+    if (theSlider.value < theSlider.maximumValue) {
+        
+        self.audioPlayer.currentTime = theSlider.value;
+        self.statusLabel.text = [NSString stringWithFormat:@"%@ %.0f sec.", 
+            self.playingOrPausedString, self.audioPlayer.currentTime];
+    }
+}
+
+- (IBAction)playOrPause {
+
     // If not playing, start playing.
     if (!self.audioPlayer.playing) {
         
         [self.audioPlayer play];
-        self.testLabel.text = @"Playback started.";
-        self.rewindButton.enabled = YES;
+        
+        // Sometimes, when the user slides the playhead to the start, the current time becomes negative. We'll fix that here.
+        if (self.audioPlayer.currentTime < 0) {
+            
+            self.audioPlayer.currentTime = 0;
+        }
+        
+        self.playingOrPausedString = @"Playing:";
+        self.stopButton.enabled = YES;
+        
+        // Deactivate any previous timer first. (Just in case.)
+        [self.sliderTimer invalidate];
+        
+        self.sliderTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self 
+            selector:@selector(updateSliderPlayhead:) userInfo:nil repeats:YES];
         [self.delegate playbackViewControllerDidStartPlaying:self];
     } else {
         
         [self.audioPlayer pause];
+        [self.sliderTimer invalidate];
         [[AVAudioSession sharedInstance] setActive:NO error:nil];
-        self.testLabel.text = @"Playback paused.";
+        self.playingOrPausedString = @"Paused at";
         [self.delegate playbackViewControllerDidStopPlaying:self];
     }
+    self.statusLabel.text = [NSString stringWithFormat:@"%@ %.0f sec.", 
+        self.playingOrPausedString, self.audioPlayer.currentTime];
 }
 
+/*
 - (IBAction)rewindToStart {
     
     self.audioPlayer.currentTime = 0;
@@ -84,9 +165,10 @@
     // If not playing, then disable rewind button, since it can't do anything.
     if (!self.audioPlayer.playing) {
         
-        self.rewindButton.enabled = NO;
+        self.stopButton.enabled = NO;
     }
 }
+ */
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     
@@ -94,11 +176,20 @@
 	return YES;
 }
 
+- (void)updateSliderPlayhead:(NSTimer *)theTimer {
+    
+    self.statusLabel.text = [NSString stringWithFormat:@"Playing: %.0f sec.", 
+        self.audioPlayer.currentTime];
+    self.playheadSlider.value = self.audioPlayer.currentTime;
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     
     // Do any additional setup after loading the view from its nib.
+    self.playheadSlider.value = 0;
+    self.playheadSlider.minimumValue = 0;
     
     // Set default (initial) size.
     self.contentSizeForViewInPopover = self.view.frame.size;
@@ -110,10 +201,10 @@
     
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    self.fastForwardButton = nil;
-    self.playButton = nil;
-    self.rewindButton = nil;
-    self.testLabel = nil;
+    self.playheadSlider = nil;
+    self.playOrPauseButton = nil;
+    self.stopButton = nil;
+    self.statusLabel = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -126,20 +217,21 @@
         AVAudioPlayer *anAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:self.voiceRecordingURL error:nil];
         if (anAudioPlayer == nil) {
             
-            self.testLabel.text = @"Recording not found.";
-            self.fastForwardButton.enabled = NO;
-            self.playButton.enabled = NO;
-            self.rewindButton.enabled = NO;
+            self.statusLabel.text = @"Nothing to play yet.";
+            self.playOrPauseButton.enabled = NO;
+            self.stopButton.enabled = NO;
+            self.playheadSlider.maximumValue = 0;
         } else {
             
             anAudioPlayer.delegate = self;
             self.audioPlayer = anAudioPlayer;
-            self.testLabel.text = [NSString stringWithFormat:@"Duration: %.0f", anAudioPlayer.duration];
-            self.fastForwardButton.enabled = YES;
-            self.playButton.enabled = YES;
-            self.rewindButton.enabled = NO;
+            self.statusLabel.text = [NSString stringWithFormat:@"Duration: %.0f sec.", anAudioPlayer.duration];
+            self.playOrPauseButton.enabled = YES;
+            self.stopButton.enabled = NO;
+            self.playheadSlider.maximumValue = anAudioPlayer.duration;
         }
         [anAudioPlayer release];
+        self.playheadSlider.value = 0;
     }
 }
 

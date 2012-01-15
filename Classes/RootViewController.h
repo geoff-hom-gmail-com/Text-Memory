@@ -91,6 +91,9 @@ extern NSString *testWidthString;
 // UIPopoverControllerDelegate method. Since the popover was dismissed, re-enable the corresponding toolbar.
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController;
 
+// RecordingAndPlaybackControllerDelegate method. Since playback paused, show that in the button for the popover.
+- (void)recordingAndPlaybackControllerDidPauseRecording:(RecordingAndPlaybackController *)theRecordingAndPlaybackController;
+
 // RecordingAndPlaybackControllerDelegate method. Since playback started, show that in the button for the popover.
 - (void)recordingAndPlaybackControllerDidStartPlaying:(RecordingAndPlaybackController *)recordingAndPlaybackController;
 

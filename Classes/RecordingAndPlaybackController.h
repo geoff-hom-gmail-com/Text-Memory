@@ -14,6 +14,9 @@
 
 @protocol RecordingAndPlaybackControllerDelegate
 
+// Sent after recording has paused.
+- (void)recordingAndPlaybackControllerDidPauseRecording:(RecordingAndPlaybackController *)sender;
+
 // Sent after playback has started.
 - (void)recordingAndPlaybackControllerDidStartPlaying:(RecordingAndPlaybackController *)sender;
 
@@ -43,6 +46,9 @@
 
 // PlaybackViewControllerDelegate method. Since playback stopped, notify our delegate.
 - (void)playbackViewControllerDidStopPlaying:(PlaybackViewController *)playbackViewController;
+
+// RecordingViewControllerDelegate method. Since recording paused, notify our delegate.
+- (void)recordingViewControllerDidPauseRecording:(RecordingViewController *)recordingViewController;
 
 // RecordingViewControllerDelegate method. Since recording started, notify our delegate.
 - (void)recordingViewControllerDidStartRecording:(RecordingViewController *)recordingViewController;

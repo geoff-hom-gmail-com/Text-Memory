@@ -20,14 +20,14 @@
 
 @implementation RecordingViewController
 
-@synthesize delegate, startButton, statusLabel, stopButton, voiceRecordingURL;
+@synthesize delegate, recordOrPauseButton, statusLabel, stopButton, voiceRecordingURL;
 @synthesize audioRecorder;
 
 - (void)dealloc {
 	
     [audioRecorder release];
     
-    [startButton release];
+    [recordOrPauseButton release];
     [statusLabel release];
     [stopButton release];
     [voiceRecordingURL release];
@@ -57,21 +57,26 @@
 	return YES;
 }
 
-- (IBAction)startRecording {
+- (IBAction)recordOrPause {
     
-    [self.audioRecorder record];
-    self.startButton.enabled = NO;
-    self.stopButton.enabled = YES;
-    self.statusLabel.text = @"Recording started.";
-    
-    [self.delegate recordingViewControllerDidStartRecording:self];
+    if (!self.audioRecorder.recording) {
+        
+        [self.audioRecorder record];
+        self.stopButton.enabled = YES;
+        self.statusLabel.text = @"Recording started.";
+        [self.delegate recordingViewControllerDidStartRecording:self];
+    } else {
+        
+        [self.audioRecorder pause];
+        self.statusLabel.text = @"Recording paused.";
+        [self.delegate recordingViewControllerDidPauseRecording:self];
+    }
 }
 
 - (IBAction)stopRecording {
     
     [self.audioRecorder stop];
     [[AVAudioSession sharedInstance] setActive:NO error:nil];
-    self.startButton.enabled = YES;
     self.stopButton.enabled = NO;
     self.statusLabel.text = @"Recording done.";
     
@@ -83,8 +88,6 @@
     [super viewDidLoad];
     
     self.statusLabel.text = @"";
-    //self.startButton.enabled = YES;
-    //self.stopButton.enabled = NO;
     
     // Set default (initial) size.
     self.contentSizeForViewInPopover = self.view.frame.size;
@@ -96,7 +99,7 @@
     
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    self.startButton = nil;
+    self.recordOrPauseButton = nil;
     self.statusLabel = nil;
     self.stopButton = nil;
 }
@@ -117,17 +120,16 @@
         AVAudioRecorder *anAudioRecorder = [[AVAudioRecorder alloc] initWithURL:self.voiceRecordingURL settings:recordingSettingsDictionary error:NULL];
         if (anAudioRecorder == nil) {
             
-            self.startButton.enabled = NO;
+            self.recordOrPauseButton.enabled = NO;
             self.stopButton.enabled = NO;
         } else {
             
             self.audioRecorder = anAudioRecorder;
-            self.startButton.enabled = YES;
+            self.recordOrPauseButton.enabled = YES;
             self.stopButton.enabled = NO;
         }
         [anAudioRecorder release];
     }
 }
-
 
 @end
