@@ -109,7 +109,7 @@ extern NSString *testWidthString;
 // TextsTableViewDelegate method. Since the user selected a text, dismiss the popover and show the text.
 - (void)textsTableViewControllerDidSelectText:(TextsTableViewController *)sender;
 
-// UITextViewDelegate method. A single tap in the text view will trigger this method twice and a tap recognizer once, but the order may vary. So check whether the selection is correct and whether the tap was already recognized.
+// UITextViewDelegate method. A single tap in the text view will trigger this method twice and a tap recognizer once, but the order may vary. So wait for the second selection change, then check whether the tap was already recognized.
 - (void)textViewDidChangeSelection:(UITextView *)theTextView;
 
 @end

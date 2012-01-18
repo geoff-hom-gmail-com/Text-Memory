@@ -65,20 +65,16 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // The string last shown in Blanks mode, for the current text.
 @property (nonatomic, retain) NSString *previousBlanksModeString;
 
+// The date of the last selection change in the text view.
 @property (nonatomic, retain) NSDate *previousSelectedRangeDate;
-
-@property (nonatomic) NSUInteger previousSelectedRangeLocation;
 
 // I.e., the previous text mode. 
 @property (nonatomic) NSUInteger previousSelectedSegmentIndex;
 
 @property (nonatomic, retain) RecordingAndPlaybackController *recordingAndPlaybackController;
 
-// Date when the text view was single-tapped while in blanks mode.
+// Date when the text view was last single-tapped while in Blanks mode.
 @property (nonatomic, retain) NSDate *textViewSingleTapInBlanksModeDate;
-
-// Date when the text view's selected range changed to the correct value.
-@property (nonatomic, retain) NSDate *textViewSelectedRangeIsCorrectDate;
 
 // Add a new text and show it.
 - (void)addANewText;
@@ -95,10 +91,13 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Go to editing view for the current text.
 - (void)editCurrentText;
 
-// If the user tapped the text view at the selected range, then we want to show or hide more words. (Assuming the user is in blanks mode.) However, a single tap in the text view will trigger a tap recognizer once and a selection change twice. Also, the recognizer may trigger before or after the selection changes. So, each tap and each selection change will call this method, and this method will first check whether the tap and current selection are consistent with what we expect.
+// If the user tapped the text view at the selected range, then we want to show or hide more words. (Assuming the user is in blanks mode.) However, a single tap in the text view will trigger a tap recognizer and a selection change, in unknown order. Both the tap and the selection change should call this method. Then check whether they occurred at approximately the same time. If so, proceed.
 - (void)handleTapAndSelectionChange;
 
-// A single tap in the text view will trigger this method once and a selection change twice, but the order may vary. So check whether the selection change already happened correctly.
+// Upon view load, we want to load the input view immediately. Otherwise, it will cause a noticeable delay later. We'll have it appear and disappear immediately. Here, we assume the text view became first responder, the input view loaded, and the input view has or will appear.
+- (void)handleTextViewBecameFirstResponderOnLoad;
+
+// A single tap in the text view will trigger this method once and a selection change twice, but the order may vary. So check whether the selection change already happened.
 - (void)handleTextViewSingleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer;
     
 // Given a text view, set its width to span the test string. Also, keep the view centered.
@@ -110,17 +109,14 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 // Create this view's popover controller, if necessary. Set the controller's content view controller.
 - (void)setPopoverControllerContentViewController:(UIViewController *)theViewController;
 
-// Show blanks/underscores for each word (plus punctuation). The same number of blanks should be shown for each word.
+// Show blanks/underscores for each word (plus punctuation). 
 - (void)showBlanks;
 
-// Show the entire text (vs. only first letters).
+// Show the entire text (vs. blanks).
 - (void)showFullText;
 
 // The user tapped the text view at the selected range, to show more words or to hide visible words. If the selection is whitespace, then do nothing. If a blank, then show words from the start through the selection. If a letter, then hide words from (and including) the selection to the end.
 - (void)showOrHideMoreWords;
-
-// Return whether the text view's current selected range is correct.
-- (BOOL)textViewSelectedRangeIsCorrect;
 
 // Make sure the correct title and text is showing. (And that the text's mode is correct.)
 - (void)updateTitleAndTextShowing;
@@ -130,7 +126,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 @implementation RootViewController
 
 @synthesize addTextBarButtonItem, bottomToolbar, currentText, currentTextTextView, editTextBarButtonItem, recordBarButtonItem, textToShowSegmentedControl, titleLabel, topToolbar, trashBarButtonItem;
-@synthesize actionSheet, blanksSegmentIndex, fullTextSegmentIndex, nothingSegmentIndex, popoverController, previousBlanksModeString, previousSelectedRangeDate, previousSelectedRangeLocation, previousSelectedSegmentIndex, recordingAndPlaybackController, textViewSingleTapInBlanksModeDate, textViewSelectedRangeIsCorrectDate;
+@synthesize actionSheet, blanksSegmentIndex, fullTextSegmentIndex, nothingSegmentIndex, popoverController, previousBlanksModeString, previousSelectedRangeDate, previousSelectedSegmentIndex, recordingAndPlaybackController, textViewSingleTapInBlanksModeDate;
 
 - (void)actionSheet:(UIActionSheet *)theActionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	
@@ -287,7 +283,6 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     self.recordingAndPlaybackController.delegate = nil;
     [recordingAndPlaybackController release];
 	[textViewSingleTapInBlanksModeDate release];
-    [textViewSelectedRangeIsCorrectDate release];
     
 	[introText_ release];
     
@@ -406,15 +401,26 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 - (void)handleTapAndSelectionChange {
     
     // Check whether there was an appropriate single tap. Check whether the current selected range is correct.
-    if (self.textViewSingleTapInBlanksModeDate != nil && self.textViewSelectedRangeIsCorrectDate != nil) {
-        
+    if ( (self.textViewSingleTapInBlanksModeDate != nil) && 
+        (self.previousSelectedRangeDate != nil) ) {
+                
         // Check whether both happened recently.
-        if ( ([self.textViewSingleTapInBlanksModeDate timeIntervalSinceNow] > -0.1) && ( [self.textViewSelectedRangeIsCorrectDate timeIntervalSinceNow] > -0.1) ) {
+        if ( ([self.textViewSingleTapInBlanksModeDate timeIntervalSinceNow] > -0.1) && 
+            ( [self.previousSelectedRangeDate timeIntervalSinceNow] > -0.1) ) {
             
             [self showOrHideMoreWords];
         }
     }
 }
+
+- (void)handleTextViewBecameFirstResponderOnLoad {
+    
+    [self.currentTextTextView resignFirstResponder];
+    
+    // Assume the view loads in full-text mode, which is not supposed to be editable. 
+    self.currentTextTextView.editable = NO;
+}
+
 
 - (void)handleTextViewSingleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer {
     
@@ -585,23 +591,32 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 }
 
 - (void)showOrHideMoreWords {
-    
+        
     // If the location is whitespace, do nothing.
-    // Update: Text view will automatically move the caret to the start or end of a word. So, if the location is whitespace, check location - 1. If that is not whitespace, then proceed with the selected index at location - 1.
+    // Update: Text view will automatically move the caret to the start or end of a word. So, if the location is the end of the text or whitespace, check location - 1. If that is not whitespace, then proceed with the selected index at location - 1.
     
     NSCharacterSet *whitespaceAndNewlineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     NSUInteger selectedIndex = self.currentTextTextView.selectedRange.location;
-    unichar aChar = [self.currentTextTextView.text characterAtIndex:selectedIndex];
-    if ([whitespaceAndNewlineCharacterSet characterIsMember:aChar] && (selectedIndex != 0) ) {
+    unichar aChar;
+    if (selectedIndex == 0) {
+        
+    } else if (selectedIndex == self.currentTextTextView.text.length) {
         
         selectedIndex = selectedIndex - 1;
+    } else {
+        
         aChar = [self.currentTextTextView.text characterAtIndex:selectedIndex];
         if ([whitespaceAndNewlineCharacterSet characterIsMember:aChar]) {
             
-            return;
+            selectedIndex = selectedIndex - 1;
         }
     }
-    
+    aChar = [self.currentTextTextView.text characterAtIndex:selectedIndex];
+    if ([whitespaceAndNewlineCharacterSet characterIsMember:aChar]) {
+            
+        return;
+    }
+        
     // The resulting text will have some full text followed by some blanks. Determine the index of the start of the blanks. Then assemble the text.
     
     // We show or hide by word, not character. So we need the range of the selection's word.
@@ -616,12 +631,12 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         selectedWordHasBlanks = YES;
     }
     if (selectedWordHasBlanks) {
-        
+                
         // First letter in word after selected word.
         startOfBlanksInTextViewTextIndex = [self.currentTextTextView.text startOfNthWord:1 afterRange:selectedWordRange];
         
     } else {
-        
+                
         // First letter in selected word.
         startOfBlanksInTextViewTextIndex = selectedWordRange.location;
     }
@@ -637,7 +652,14 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     [newTextMutableString appendString:blanksSubstring];
     
     self.currentTextTextView.text = newTextMutableString;
-    [self.currentTextTextView scrollRangeToVisible:NSMakeRange(fullTextSubstring.length, 0)];
+    
+    // When showing more words, the current text may get much larger, so the selected range will no longer be visible. We'll scroll down so that the selected range (transition from words to blanks) is visible.
+    
+    // We want to scroll a couple lines past the selected range, so it won't be on the very bottom. The text view's width is maintained at a character width: 26 + 13 + 2 = 41. So a couple lines should be 82 characters more. 
+    // If the range is past the length, then the text view won't scroll.
+    NSUInteger twoLinesAfterFirstBlankIndex = MIN(fullTextSubstring.length + 82, self.currentTextTextView.text.length);
+    NSRange twoLinesAfterFirstBlankRange = NSMakeRange(twoLinesAfterFirstBlankIndex, 0);
+    [self.currentTextTextView scrollRangeToVisible:twoLinesAfterFirstBlankRange];
 }
 
 - (IBAction)showRecordingPopover:(id)sender {
@@ -697,54 +719,29 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 }
 
 - (void)textViewDidChangeSelection:(UITextView *)theTextView {
+    
+    //NSLog(@"RVC tVDCS selectedRange:%@", NSStringFromRange(self.currentTextTextView.selectedRange));
+    
+    if (self.textToShowSegmentedControl.selectedSegmentIndex == self.blanksSegmentIndex) {
 	
-    // In blanks mode, the text view is editable to allow a single tap to set the selection range. But we don't want the keyboard to show up, so we'll always resign the first responder.
-    if ( (self.textToShowSegmentedControl.selectedSegmentIndex == blanksSegmentIndex) && self.currentTextTextView.isFirstResponder) {
+        // In blanks mode, the text view is editable to allow a single tap to set the selection range. But we don't want the keyboard to show up, so we'll always resign the first responder.
+        if (self.currentTextTextView.isFirstResponder) {
+            
+            [self.currentTextTextView resignFirstResponder];
+        }
         
-        [self.currentTextTextView resignFirstResponder];
-    }
-    
-    // Sometimes the selected range will be beyond the end of the text. In that case, do nothing.
-    if (self.currentTextTextView.selectedRange.location >= self.currentTextTextView.text.length) {
+        // When the user taps in the text view, textViewDidChangeSelection is called twice, in quick succession. We want to ignore the first time. So, when a selection change occurs, note when. If the previous change just occurred, then keep going.
         
-        return;
-    }
-    
-    if ([self textViewSelectedRangeIsCorrect]) {
+        NSDate *aDate = [NSDate date];
+        NSTimeInterval timeSincePreviousSelectedRange = [aDate timeIntervalSinceDate:self.previousSelectedRangeDate];
+        self.previousSelectedRangeDate = aDate;
         
-        if (self.textToShowSegmentedControl.selectedSegmentIndex == self.blanksSegmentIndex) {
-
-            self.textViewSelectedRangeIsCorrectDate = [NSDate date];
+        // This value is important. Note that the simulator is usually much faster than the device. But even in the simulator, a double-tap takes at least 0.17 seconds. On the device, the second selection change should be within 0.10 seconds.
+        if (timeSincePreviousSelectedRange < 0.10) {
+            
             [self handleTapAndSelectionChange];
         }
-    } else {
-        
-        self.textViewSelectedRangeIsCorrectDate = nil;
     }
-    self.previousSelectedRangeLocation = self.currentTextTextView.selectedRange.location;
-    self.previousSelectedRangeDate = [NSDate date];
-}
-
-- (BOOL)textViewSelectedRangeIsCorrect {
-    
-    // When user single-taps in the text view, textViewDidChangeSelection is called twice. The first time, the selected range is the text length (in iOS 4.3) or the previous range (in iOS 5.0+). The second time, the selected range is correct (i.e., where the tap was). So we want to ignore the first textViewDidChangeSelection. (If user double-taps, then textViewDidChangeSelection is called four times, with the correct range the last three times.)
-
-    // Assume selected ranges outside the text range were already ignored. 
-    // If the user taps once and later taps elsewhere, then the previous range will be detected once and the new range will be detected immediately after.
-    // If the user taps once and later taps in exactly the same place, then the previous range will be detected twice, with the second time immediately after the first. 
-    // So, we'll check if the current range is identical to the previous range. If so, the current range is incorrect. The exception is if the current range change happened immediately after the previous range change (e.g., < 0.1 seconds).
-    
-    BOOL answer = YES;
-    if (self.currentTextTextView.selectedRange.location == self.previousSelectedRangeLocation) {
-        
-        answer = NO;
-        NSTimeInterval timeSincePreviousSelectedRange = [ [NSDate date] timeIntervalSinceDate:self.previousSelectedRangeDate];
-        if (timeSincePreviousSelectedRange < 0.1) {
-            
-            answer = YES;
-        }
-    }
-    return answer;
 }
 
 - (void)updateTitleAndTextShowing {
@@ -811,6 +808,20 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
         aSingleTapGestureRecognizer.delegate = self;
         [self.currentTextTextView addGestureRecognizer:aSingleTapGestureRecognizer];
 		[aSingleTapGestureRecognizer release];
+        
+        // The user can tap a word to show or hide more words. The tapped word is determined by the text view's selected range. The selected range is updated only if the text view is editable. When the user taps the editable text view, the keyboard appears. The first time this happens, there is a noticeable (~1 second) delay. To circumvent this, we'll make the keyboard appear and disappear right away, so the delay will be part of the initial load. However, on the device, the keyboard still appears for a split second. So we'll also replace the keyboard with a hidden dummy view.
+        
+        CGRect tinyFrameRect = CGRectMake(0, 0, 0, 0);
+        UIView *aDummyInputView = [[UIView alloc] initWithFrame:tinyFrameRect];
+        aDummyInputView.autoresizingMask = UIViewAutoresizingNone;
+        aDummyInputView.hidden = YES;
+        self.currentTextTextView.inputView = aDummyInputView;
+        [aDummyInputView release];
+        
+        // Calling resignFirstResponder right away doesn't always work. But calling it after an immediate timer does.
+        self.currentTextTextView.editable = YES;
+        [self.currentTextTextView becomeFirstResponder];
+        [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(handleTextViewBecameFirstResponderOnLoad) userInfo:nil repeats:NO];
 	}
 }
 
@@ -834,6 +845,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
     
 	self.addTextBarButtonItem = nil;
 	self.bottomToolbar = nil;
+    self.currentTextTextView.inputView = nil;
 	self.currentTextTextView.delegate = nil;
 	self.currentTextTextView = nil;
 	self.editTextBarButtonItem = nil;
