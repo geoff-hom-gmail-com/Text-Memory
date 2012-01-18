@@ -24,12 +24,6 @@
 // An override of NSManagedObject. Initialize values. Add observers.
 - (void)awakeFromInsert;
 
-// Create text showing only the first letter of each word of the full text. Replace other letters with spaces. Retain punctuation.
-- (NSString *)createFirstLetterText;
-
-// Create text showing only underscores for each letter. Retain punctuation.
-- (NSString *)createUnderscoreText;
-
 - (NSString *)makeBlanksText;
 
 // Stop key-value observing.
@@ -43,7 +37,7 @@
 
 @implementation Text 
 
-@dynamic firstLetterText, isDefaultData_, text, title, underscoreText;
+@dynamic isDefaultData_, text, title;
 @synthesize blanksText_;
 
 - (void)addObservers {
@@ -93,6 +87,7 @@
     return aText;
 }
 
+/*
 - (NSString *)createFirstLetterText {
 	
 	// this should be called only when the text changes. not each time it's loaded or each time the switch is done. only when first made and when edited.
@@ -138,50 +133,7 @@
     //NSLog(@"T cFLT:%@", aMutableFirstLetterText);
 	return aMutableFirstLetterText;
 }
-
-- (NSString *)createUnderscoreText {
-    
-    // this should be called only when the text changes. not each time it's loaded or each time the switch is done. only when first made and when edited.
-	// I could trigger this by kvo on the text property.
-	NSLog(@"Text: createUnderscoreText");
-	
-	// Go through the text, one character at a time. If it is a letter (or apostrophe), then replace with an underscore. Otherwise, keep it.
-	//NSString *spaceString = @" ";
-	NSString *underscoreString = @"_";
-	NSMutableCharacterSet *letterEtAlMutableCharacterSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
-	[letterEtAlMutableCharacterSet addCharactersInString:@"'"];
-	NSCharacterSet *letterEtAlCharacterSet = [letterEtAlMutableCharacterSet copy];
-	[letterEtAlMutableCharacterSet release];
-	NSMutableString *aMutableFirstLetterText = [NSMutableString stringWithCapacity:self.text.length];
-	//BOOL previousCharacterWasLetter = NO;
-	unichar character;
-	NSString *characterToAddString;
-	BOOL currentCharacterIsLetter;
-	BOOL addUnderscore;
-	for (int i = 0; i < self.text.length; i++) {
-		
-		currentCharacterIsLetter = NO;
-		character = [self.text characterAtIndex:i];
-		if ( [letterEtAlCharacterSet characterIsMember:character] ) {
-			currentCharacterIsLetter = YES;
-		}
-		
-		addUnderscore = NO;
-		if (currentCharacterIsLetter) {
-			addUnderscore = YES;
-		}
-		
-		if (addUnderscore) {
-			[aMutableFirstLetterText appendString:underscoreString];
-		} else {
-			characterToAddString = [NSString stringWithCharacters:&character length:1];
-			[aMutableFirstLetterText appendString:characterToAddString];
-		}		
-	}
-	[letterEtAlCharacterSet release];
-    //NSLog(@"T cFLT:%@", aMutableFirstLetterText);
-	return aMutableFirstLetterText;
-}
+ */
 
 - (void)dealloc {
     
@@ -282,8 +234,7 @@
 	if ([keyPath isEqualToString:@"text"]) {
 		
 		NSLog(@"Text observeValueForKeyPath: Text changed.");
-		self.firstLetterText = [self createFirstLetterText];
-        self.underscoreText = [self createUnderscoreText];
+		//self.firstLetterText = [self createFirstLetterText];
         self.blanksText_ = nil;
 	}
 }

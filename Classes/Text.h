@@ -12,15 +12,11 @@
 @interface Text :  NSManagedObject  {
 }
 
-@property (nonatomic, retain) NSString *firstLetterText;
-
 // This is a BOOL but under Core Data, so it must be an NSNumber.
 @property (nonatomic, retain) NSNumber *isDefaultData_;
 
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *text;
-
-@property (nonatomic, retain) NSString *underscoreText;
 
 // Return a new instance with the same properties as this one. 
 - (Text *)clone;

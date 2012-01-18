@@ -65,6 +65,7 @@
 		9311CD6C14B6376400AF75D7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		9311CD6E14B639AB00AF75D7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		9311CD7014B63A1700AF75D7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		9313FB3F14C6B012006CA91A /* 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 3.xcdatamodel; sourceTree = "<group>"; };
 		934912D61435A72700ED3BD0 /* FontSizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontSizeViewController.h; sourceTree = "<group>"; };
 		934912D71435A72700ED3BD0 /* FontSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontSizeViewController.m; sourceTree = "<group>"; };
 		934912D81435A72700ED3BD0 /* FontSizeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FontSizeViewController.xib; sourceTree = "<group>"; };
@@ -75,7 +76,7 @@
 		934915C11441786100ED3BD0 /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
 		934916331442D5EE00ED3BD0 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
 		934916341442D5EE00ED3BD0 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
-		936F74DF14BF4584003C79A7 /* NSString+Words.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "NSString+Words.h"; sourceTree = "<group>"; };
+		936F74DF14BF4584003C79A7 /* NSString+Words.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Words.h"; sourceTree = "<group>"; };
 		936F74E014BF4584003C79A7 /* NSString+Words.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Words.m"; sourceTree = "<group>"; };
 		93908AD7142901960037CE62 /* DefaultData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultData.h; sourceTree = "<group>"; };
 		93908AD8142901960037CE62 /* DefaultData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultData.m; sourceTree = "<group>"; };
@@ -433,10 +434,11 @@
 		28193054112F811F00ECF9B4 /* Text_Memory.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9313FB3F14C6B012006CA91A /* 3.xcdatamodel */,
 				93DC3A53148829D40060CC9B /* 2.xcdatamodel */,
 				28C3AD890F43EF2300507BA6 /* Text_Memory.xcdatamodel */,
 			);
-			currentVersion = 93DC3A53148829D40060CC9B /* 2.xcdatamodel */;
+			currentVersion = 9313FB3F14C6B012006CA91A /* 3.xcdatamodel */;
 			path = Text_Memory.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
