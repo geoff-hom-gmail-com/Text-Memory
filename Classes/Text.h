@@ -25,9 +25,8 @@
 // Return a new instance with the same properties as this one. 
 - (Text *)clone;
 
-// Return the uni-blank text. If not made yet, make it.
-// could change this to uniBlankText and use self.uniBlankText_
-- (NSString *)getUniBlankText;
+// Return the blanks text. If not made yet, make it.
+- (NSString *)blanksText;
 
 // Return isDefaultData_ as BOOL.
 - (BOOL)isDefaultData;

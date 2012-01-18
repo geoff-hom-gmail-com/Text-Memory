@@ -145,18 +145,16 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<int key="IBSegmentControlStyle">2</int>
-								<int key="IBNumberOfSegments">4</int>
+								<int key="IBNumberOfSegments">3</int>
 								<int key="IBSelectedSegmentIndex">0</int>
 								<object class="NSArray" key="IBSegmentTitles">
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<string>Full Text</string>
 									<string>Blanks</string>
 									<string>Nothing</string>
-									<string>UniBlanks</string>
 								</object>
 								<object class="NSMutableArray" key="IBSegmentWidths">
 									<bool key="EncodedWithXMLCoder">YES</bool>
-									<real value="0.0"/>
 									<real value="0.0"/>
 									<real value="0.0"/>
 									<real value="0.0"/>
@@ -166,11 +164,9 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 									<boolean value="YES"/>
 									<boolean value="YES"/>
 									<boolean value="YES"/>
-									<boolean value="YES"/>
 								</object>
 								<object class="NSMutableArray" key="IBSegmentContentOffsets">
 									<bool key="EncodedWithXMLCoder">YES</bool>
-									<string>{0, 0}</string>
 									<string>{0, 0}</string>
 									<string>{0, 0}</string>
 									<string>{0, 0}</string>
@@ -178,7 +174,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<object class="NSMutableArray" key="IBSegmentImages">
 									<bool key="EncodedWithXMLCoder">YES</bool>
 									<object class="NSNull" id="4"/>
-									<reference ref="4"/>
 									<reference ref="4"/>
 									<reference ref="4"/>
 								</object>
@@ -193,9 +188,9 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<object class="NSMutableArray" key="IBUIItems">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBUIBarButtonItem" id="966601196">
+							<object class="IBUIBarButtonItem" id="739106468">
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<float key="IBUIWidth">14</float>
+								<float key="IBUIWidth">12</float>
 								<reference key="IBUIToolbar" ref="421974764"/>
 								<int key="IBUISystemItemIdentifier">6</int>
 							</object>
@@ -203,12 +198,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<reference key="IBUIToolbar" ref="421974764"/>
 								<int key="IBUISystemItemIdentifier">16</int>
-							</object>
-							<object class="IBUIBarButtonItem" id="482384007">
-								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<float key="IBUIWidth">36</float>
-								<reference key="IBUIToolbar" ref="421974764"/>
-								<int key="IBUISystemItemIdentifier">6</int>
 							</object>
 							<object class="IBUIBarButtonItem" id="275131949">
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
@@ -224,12 +213,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 								<reference key="IBUIToolbar" ref="421974764"/>
 								<int key="IBUISystemItemIdentifier">5</int>
-							</object>
-							<object class="IBUIBarButtonItem" id="141788584">
-								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<float key="IBUIWidth">76</float>
-								<reference key="IBUIToolbar" ref="421974764"/>
-								<int key="IBUISystemItemIdentifier">6</int>
 							</object>
 						</object>
 						<object class="NSColor" key="IBUITintColor">
@@ -491,23 +474,16 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="175929916"/>
-							<reference ref="966601196"/>
 							<reference ref="721562630"/>
 							<reference ref="275131949"/>
-							<reference ref="482384007"/>
 							<reference ref="10711532"/>
-							<reference ref="141788584"/>
+							<reference ref="739106468"/>
 						</object>
 						<reference key="parent" ref="766721923"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">39</int>
 						<reference key="object" ref="175929916"/>
-						<reference key="parent" ref="421974764"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">47</int>
-						<reference key="object" ref="966601196"/>
 						<reference key="parent" ref="421974764"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -540,11 +516,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<reference key="parent" ref="421974764"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">67</int>
-						<reference key="object" ref="482384007"/>
-						<reference key="parent" ref="421974764"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">71</int>
 						<reference key="object" ref="481905089"/>
 						<reference key="parent" ref="754082218"/>
@@ -560,14 +531,14 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<reference key="parent" ref="421974764"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">76</int>
-						<reference key="object" ref="141788584"/>
-						<reference key="parent" ref="421974764"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">77</int>
 						<reference key="object" ref="289560517"/>
 						<reference key="parent" ref="754082218"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">80</int>
+						<reference key="object" ref="739106468"/>
+						<reference key="parent" ref="421974764"/>
 					</object>
 				</object>
 			</object>
@@ -587,7 +558,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 					<string>39.IBPluginDependency</string>
 					<string>4.IBPluginDependency</string>
 					<string>40.IBPluginDependency</string>
-					<string>47.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>56.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
@@ -596,10 +566,9 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 					<string>63.IUISegmentedControlInspectorSelectedSegmentMetadataKey</string>
 					<string>64.IBPluginDependency</string>
 					<string>65.IBPluginDependency</string>
-					<string>67.IBPluginDependency</string>
 					<string>71.IBPluginDependency</string>
-					<string>76.IBPluginDependency</string>
 					<string>77.IBPluginDependency</string>
+					<string>80.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -612,7 +581,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="IBUserGuide">
 							<reference key="view" ref="766721923"/>
-							<double key="location">34</double>
+							<double key="location">36</double>
 							<int key="affinity">0</int>
 						</object>
 						<object class="IBUserGuide">
@@ -652,9 +621,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-					<integer value="3"/>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+					<integer value="2"/>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -674,7 +641,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">79</int>
+			<int key="maxID">80</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

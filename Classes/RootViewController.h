@@ -79,15 +79,6 @@ extern NSString *testWidthString;
 // UIGestureRecognizerDelegate method. Allow the gesture recognizer with this class as the delegate to work with others.
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer;
 
-// A double tap was made in a text margin. Toggle first letters or full text.
-- (void)handleMarginDoubleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer;
-
-// A single tap was made in a text margin. If showing first letters, then reset the first letters (i.e., hide any full text that was revealed).
-- (void)handleMarginSingleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer;
-
-// A double tap was made in the text view. If it's showing first letters, record that. Check whether to show the full text for the text view's selection.
-- (void)handleTextViewDoubleTapGesture:(UITapGestureRecognizer *)theTapGestureRecognizer;
-
 // UIPopoverControllerDelegate method. Since the popover was dismissed, re-enable the corresponding toolbar.
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController;
 
@@ -118,7 +109,7 @@ extern NSString *testWidthString;
 // TextsTableViewDelegate method. Since the user selected a text, dismiss the popover and show the text.
 - (void)textsTableViewControllerDidSelectText:(TextsTableViewController *)sender;
 
-// UITextViewDelegate method. If in first-letter mode, show the selection's full text. (Exceptions: ?)
+// UITextViewDelegate method. A single tap in the text view will trigger this method twice and a tap recognizer once, but the order may vary. So check whether the selection is correct and whether the tap was already recognized.
 - (void)textViewDidChangeSelection:(UITextView *)theTextView;
 
 @end

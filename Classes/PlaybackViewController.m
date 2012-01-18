@@ -25,7 +25,7 @@
 
 @implementation PlaybackViewController
 
-@synthesize audioPlayer, delegate, playheadSlider, playOrPauseButton, stopButton, statusLabel, voiceRecordingURL;
+@synthesize audioPlayer, delegate, playheadSlider, playOrPauseButton, statusLabel, voiceRecordingURL;
 @synthesize audioPlayerWasPlaying, playingOrPausedString, sliderTimer;
 
 - (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player {
@@ -43,7 +43,6 @@
     self.statusLabel.text = [NSString stringWithFormat:@"Duration: %.0f sec.", 
         self.audioPlayer.duration];
     self.playingOrPausedString = @"Paused at";
-    self.stopButton.enabled = NO;
     self.playheadSlider.value = 0;
     [self.delegate playbackViewControllerDidStopPlaying:self];
 }
@@ -62,7 +61,6 @@
     [audioPlayer release];
     [playheadSlider release];
     [playOrPauseButton release];
-    [stopButton release];
     [statusLabel release];
     [voiceRecordingURL release];
     
@@ -137,7 +135,6 @@
         }
         
         self.playingOrPausedString = @"Playing:";
-        self.stopButton.enabled = YES;
         
         // Deactivate any previous timer first. (Just in case.)
         [self.sliderTimer invalidate];
@@ -156,19 +153,6 @@
     self.statusLabel.text = [NSString stringWithFormat:@"%@ %.0f sec.", 
         self.playingOrPausedString, self.audioPlayer.currentTime];
 }
-
-/*
-- (IBAction)rewindToStart {
-    
-    self.audioPlayer.currentTime = 0;
-    
-    // If not playing, then disable rewind button, since it can't do anything.
-    if (!self.audioPlayer.playing) {
-        
-        self.stopButton.enabled = NO;
-    }
-}
- */
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     
@@ -203,7 +187,6 @@
     // e.g. self.myOutlet = nil;
     self.playheadSlider = nil;
     self.playOrPauseButton = nil;
-    self.stopButton = nil;
     self.statusLabel = nil;
 }
 
@@ -219,7 +202,6 @@
             
             self.statusLabel.text = @"Nothing to play yet.";
             self.playOrPauseButton.enabled = NO;
-            self.stopButton.enabled = NO;
             self.playheadSlider.maximumValue = 0;
         } else {
             
@@ -227,7 +209,6 @@
             self.audioPlayer = anAudioPlayer;
             self.statusLabel.text = [NSString stringWithFormat:@"Duration: %.0f sec.", anAudioPlayer.duration];
             self.playOrPauseButton.enabled = YES;
-            self.stopButton.enabled = NO;
             self.playheadSlider.maximumValue = anAudioPlayer.duration;
         }
         [anAudioPlayer release];

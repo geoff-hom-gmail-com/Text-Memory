@@ -32,9 +32,6 @@
 
 @property (nonatomic, retain) IBOutlet UIButton *playOrPauseButton;
 
-// remove this?
-@property (nonatomic, retain) IBOutlet UIButton *stopButton;
-
 // Label for showing playback status.
 @property (nonatomic, retain) IBOutlet UILabel *statusLabel;
 

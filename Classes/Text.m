@@ -13,7 +13,7 @@
 @interface Text ()
 
 // The text, substituted with the same number of blanks per word, and preserving punctuation (except apostrophes).
-@property (nonatomic, retain) NSString *uniBlankText;
+@property (nonatomic, retain) NSString *blanksText_;
 
 // Start key-value observing.
 - (void)addObservers;
@@ -30,8 +30,7 @@
 // Create text showing only underscores for each letter. Retain punctuation.
 - (NSString *)createUnderscoreText;
 
-// Make the uni-blank text.
-- (NSString *)makeUniBlankText;
+- (NSString *)makeBlanksText;
 
 // Stop key-value observing.
 - (void)removeObservers;
@@ -45,7 +44,7 @@
 @implementation Text 
 
 @dynamic firstLetterText, isDefaultData_, text, title, underscoreText;
-@synthesize uniBlankText;
+@synthesize blanksText_;
 
 - (void)addObservers {
 
@@ -186,17 +185,17 @@
 
 - (void)dealloc {
     
-    [uniBlankText release];
+    [blanksText_ release];
     [super dealloc];
 }
 
-- (NSString *)getUniBlankText {
+- (NSString *)blanksText {
     
-    if (self.uniBlankText == nil) {
+    if (self.blanksText_ == nil) {
         
-        self.uniBlankText = [self makeUniBlankText];
+        self.blanksText_ = [self makeBlanksText];
     }
-    return self.uniBlankText;
+    return self.blanksText_;
 }
 
 - (BOOL)isDefaultData {
@@ -204,15 +203,15 @@
 	return [self.isDefaultData_ boolValue];
 }
 
-- (NSString *)makeUniBlankText {
+- (NSString *)makeBlanksText {
     
     // Each word will be replaced by this string. 
     NSString *blanksString = @"__";
 	
-    //time this
-    NSLog(@"starting makeUniBlankText");
+    // For rough timing of how long to make the blanks text.
+    //NSLog(@"Starting makeBlanksText");
     
-    // Go through the text to build the uni-blank text. If a letter (or apostrophe), use the number of blanks per word, then ignore letters (and apostrophes) until a non-letter (and non-apostrophe). Otherwise (e.g., whitespace, other punctuation), use that.
+    // Go through the text to build the blanks text. If a letter (or apostrophe), use the number of blanks per word, then ignore letters (and apostrophes) until a non-letter (and non-apostrophe). Otherwise (e.g., whitespace, other punctuation), use that.
     
     // Make a non-mutable character set of letters and an apostrophe.
     NSMutableCharacterSet *letterEtAlMutableCharacterSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
@@ -220,7 +219,7 @@
 	NSCharacterSet *letterEtAlCharacterSet = [letterEtAlMutableCharacterSet copy];
 	[letterEtAlMutableCharacterSet release];
     
-	NSMutableString *aUniBlankTextMutableString = [NSMutableString stringWithCapacity:self.text.length];
+	NSMutableString *aBlanksTextMutableString = [NSMutableString stringWithCapacity:self.text.length];
 	unichar character;
 	NSString *characterToAddString;
 	BOOL addBlanks;
@@ -251,14 +250,13 @@
         // Add characters, if any.
         if (skip) {
             
-            ;
         } else if (addBlanks) {
             
-			[aUniBlankTextMutableString appendString:blanksString];
+			[aBlanksTextMutableString appendString:blanksString];
 		} else {
             
 			characterToAddString = [NSString stringWithCharacters:&character length:1];
-			[aUniBlankTextMutableString appendString:characterToAddString];
+			[aBlanksTextMutableString appendString:characterToAddString];
 		}	
         
         // Set flags for next run through loop.
@@ -272,8 +270,10 @@
 	}
 	[letterEtAlCharacterSet release];
     
-    NSLog(@"done makeUniBlankText");
-    return aUniBlankTextMutableString;
+    // For rough timing of how long to make the blanks text.
+    //NSLog(@"done makeBlanksText");
+    
+    return aBlanksTextMutableString;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -281,10 +281,10 @@
 	// If the text was changed, then update the text for each text mode.
 	if ([keyPath isEqualToString:@"text"]) {
 		
-		NSLog(@"Text oVFKP: text changed.");
+		NSLog(@"Text observeValueForKeyPath: Text changed.");
 		self.firstLetterText = [self createFirstLetterText];
         self.underscoreText = [self createUnderscoreText];
-        self.uniBlankText = nil;
+        self.blanksText_ = nil;
 	}
 }
 
