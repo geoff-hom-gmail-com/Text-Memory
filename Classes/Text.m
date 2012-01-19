@@ -62,7 +62,7 @@
 	self.isDefaultData = NO;
 	self.title = @"A New Text";
 	self.text = @"This is a new text."
-        "\n\nTo edit the title and words of this text: First, tap \"Edit\" (top-left of the screen), then \"Edit Current Title and Text,\" to go into editing mode."
+        "\n\nTo edit the title and words of this text: First, tap \"Edit\" (top-left of the screen), then \"Edit Current Title and Text,\" to enter editing mode."
         "\n\nTo edit the title: While in editing mode, tap \"Rename Title\" (bottom-left)."
         "\n\nTo edit the words of this text: While in editing mode, tap the text."
         "\n\nTo select all of the text: While in editing mode, hold your finger on the text until a magnifying glass appears. Then let go, and a menu will appear with options to \"Select\" and \"Select All.\"" 

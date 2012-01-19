@@ -66,6 +66,8 @@
 		9311CD6E14B639AB00AF75D7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		9311CD7014B63A1700AF75D7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		9313FB3F14C6B012006CA91A /* 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 3.xcdatamodel; sourceTree = "<group>"; };
+		9317A9C414CB903E006180CC /* 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 4.xcdatamodel; sourceTree = "<group>"; };
+		9317A9C514CB95B9006180CC /* 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = 5.xcdatamodel; sourceTree = "<group>"; };
 		934912D61435A72700ED3BD0 /* FontSizeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontSizeViewController.h; sourceTree = "<group>"; };
 		934912D71435A72700ED3BD0 /* FontSizeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontSizeViewController.m; sourceTree = "<group>"; };
 		934912D81435A72700ED3BD0 /* FontSizeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FontSizeViewController.xib; sourceTree = "<group>"; };
@@ -434,11 +436,13 @@
 		28193054112F811F00ECF9B4 /* Text_Memory.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9317A9C514CB95B9006180CC /* 5.xcdatamodel */,
+				9317A9C414CB903E006180CC /* 4.xcdatamodel */,
 				9313FB3F14C6B012006CA91A /* 3.xcdatamodel */,
 				93DC3A53148829D40060CC9B /* 2.xcdatamodel */,
 				28C3AD890F43EF2300507BA6 /* Text_Memory.xcdatamodel */,
 			);
-			currentVersion = 9313FB3F14C6B012006CA91A /* 3.xcdatamodel */;
+			currentVersion = 9317A9C514CB95B9006180CC /* 5.xcdatamodel */;
 			path = Text_Memory.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
