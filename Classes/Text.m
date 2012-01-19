@@ -165,9 +165,10 @@
     
     // Go through the text to build the blanks text. If a letter (or apostrophe), use the number of blanks per word, then ignore letters (and apostrophes) until a non-letter (and non-apostrophe). Otherwise (e.g., whitespace, other punctuation), use that.
     
-    // Make a non-mutable character set of letters and an apostrophe.
+    // Make a non-mutable character set of letters and punctuation that is part of a word (e.g., apostrophe).
+    
     NSMutableCharacterSet *letterEtAlMutableCharacterSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
-	[letterEtAlMutableCharacterSet addCharactersInString:@"'"];
+	[letterEtAlMutableCharacterSet addCharactersInString:@"'’"];
 	NSCharacterSet *letterEtAlCharacterSet = [letterEtAlMutableCharacterSet copy];
 	[letterEtAlMutableCharacterSet release];
     

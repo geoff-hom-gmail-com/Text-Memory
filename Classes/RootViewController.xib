@@ -46,10 +46,9 @@
 					<object class="IBUITextView" id="523392110">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">277</int>
-						<string key="NSFrame">{{153, 45}, {465, 916}}</string>
+						<string key="NSFrame">{{153, 45}, {464, 916}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<object class="NSColor" key="IBUIBackgroundColor" id="774121871">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MQA</bytes>
@@ -66,13 +65,11 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						</object>
 						<object class="IBUIFontDescription" key="IBUIFontDescription">
-							<string key="name">CourierNewPSMT</string>
-							<string key="family">Courier New</string>
-							<int key="traits">0</int>
+							<int key="type">1</int>
 							<double key="pointSize">19</double>
 						</object>
 						<object class="NSFont" key="IBUIFont">
-							<string key="NSName">CourierNewPSMT</string>
+							<string key="NSName">Helvetica</string>
 							<double key="NSSize">19</double>
 							<int key="NSfFlags">16</int>
 						</object>

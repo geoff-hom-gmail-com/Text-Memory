@@ -483,6 +483,9 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	newFrame.size.width = newWidth;
 	newFrame.origin.x = (self.view.frame.size.width - newFrame.size.width) / 2;
 	theTextView.frame = newFrame;
+    
+    // For testing. If x or y is not an integer, then we're drawing on a subpixel boundary, and the text will be blurry.
+    //NSLog(@"RVC mRWOTV: %@", NSStringFromCGRect(newFrame));
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

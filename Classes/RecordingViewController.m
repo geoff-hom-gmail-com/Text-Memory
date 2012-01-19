@@ -61,6 +61,9 @@
     
     if (!self.audioRecorder.recording) {
         
+        // This may not be needed. But sometimes there was a pop or clipping sound at the start of a recording. Hopefully this (or audioPlayer prepareToPlay) fixes it.
+        [self.audioRecorder prepareToRecord];
+        
         [self.audioRecorder record];
         self.stopButton.enabled = YES;
         self.statusLabel.text = @"Recording started.";
