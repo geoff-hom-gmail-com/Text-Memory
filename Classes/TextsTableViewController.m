@@ -84,7 +84,7 @@
 	
 	// Set size in popover to match the number of content rows.
 	[self.tableView layoutIfNeeded];
-	CGSize size = CGSizeMake(320.0, self.tableView.contentSize.height);
+	CGSize size = CGSizeMake(380.0, self.tableView.contentSize.height);
 	self.contentSizeForViewInPopover = size;
 }
 

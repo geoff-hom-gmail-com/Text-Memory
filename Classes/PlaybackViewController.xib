@@ -113,7 +113,6 @@
 						<string key="NSFrame">{{10, 84}, {195, 23}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
@@ -121,7 +120,7 @@
 						<float key="IBUIValue">0.5</float>
 					</object>
 				</array>
-				<string key="NSFrameSize">{215, 125}</string>
+				<string key="NSFrameSize">{215, 117}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="574853127"/>
@@ -303,7 +302,6 @@
 						<string key="playOrPauseButton">UIButton</string>
 						<string key="playheadSlider">UISlider</string>
 						<string key="statusLabel">UILabel</string>
-						<string key="stopButton">UIButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="playOrPauseButton">
@@ -317,10 +315,6 @@
 						<object class="IBToOneOutletInfo" key="statusLabel">
 							<string key="name">statusLabel</string>
 							<string key="candidateClassName">UILabel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="stopButton">
-							<string key="name">stopButton</string>
-							<string key="candidateClassName">UIButton</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

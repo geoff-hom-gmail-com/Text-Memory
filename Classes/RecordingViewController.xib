@@ -104,6 +104,7 @@
 						<string key="NSFrame">{{10, 55}, {144, 21}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -128,7 +129,7 @@
 						</object>
 					</object>
 				</array>
-				<string key="NSFrameSize">{215, 125}</string>
+				<string key="NSFrameSize">{215, 117}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="340126028"/>

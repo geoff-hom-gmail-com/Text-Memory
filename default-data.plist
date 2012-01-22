@@ -5,43 +5,112 @@
 	<key>Welcome!</key>
 	<dict>
 		<key>Text</key>
-		<string>Welcome to Text-to-First-Letters, by Geoff Hom!
+		<string>Welcome to Text Memory, by Geoff Hom!
 		
-This is a tool for memorizing any text. It works by showing you only the first letter of each word in the text. 
+Suppose you have a passage that you enjoy reading. Now imagine being able to recite that passage to yourself or others, without any notes! Text Memory can get you there. 
             
-First, add the text you want to memorize. Then, study the text until you can read it aloud by seeing only the first letters.
-
-The big idea: When you see only the first letters, but you can read the entire text aloud, then the text should effectively be in your head.
+To learn how to use Text Memory, please go through the examples, which are several steps. 
             
-Geoff may be reached at GeoffHom@gmail.com.
-
+To start, tap "Texts" in the top-left of the screen, then tap on the text for Step 1.
             
-An example is included, with instructions for using this tool. To see the example: Tap "Texts" (top-left of the screen), then "Example."</string>
+            
+Correspondence may be sent to GeoffHom@gmail.com.</string>
 	</dict>
-	<key>Example</key>
+    <key>Step 1: Read Intently and Aloud</key>
 	<dict>
 		<key>Text</key>
-		<string>To get a feel for this tool, try to memorize this paragraph from Abraham Lincoln:
-		
+		<string>As an example of how to use Text Memory, let our goal be to memorize this text:
+            
   "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
 
 
-You may switch between the full text and the first letter of each word by tapping "Full Text" and "First Letters" (bottom of the screen). Your goal is to recite the paragraph above when only the first letters are visible.
+You can make the text bigger or smaller by tapping "Font Size" in the top-right of the screen. Try this now.
             
-
-After you have memorized the text, try the following:
-
-Switch between full text and first letters more easily: Double-tap in the margins outside the text.
-
-Reveal a word: While viewing first letters, double-tap a word. 
+Our final goal is to recite the text without looking at the screen. However, Step 1 is simply, "Read intently and aloud." The idea is that concentrating, moving your lips and enunciating will help your brain get used to the text.
             
-Hide revealed words: While viewing first letters, double-tap a word to reveal it. Then, make a single tap in the margins outside the text.
+Please read the text intently and aloud. 
             
-Increase or decrease the font size: Tap "Font Size" (top-right).
-
-Add a new text: Tap "+" (top-left), then "Add a New Text."
-        
-Enjoy!</string>
+When satisfied, go to Step 2a. (Tap "Texts," then tap on the text for Step 2a.)</string>
 	</dict>
+    <key>Step 2a: Blanks Mode</key>
+	<dict>
+		<key>Text</key>
+		<string>  "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
+
+
+In this step, we introduce "Blanks" mode. If you're already familiar with this mode, go to Step 2b.
+
+Blanks mode replaces each word with blanks (__). Try switching between Blanks mode and "Full Text" mode by tapping the corresponding buttons at the bottom of the screen.
+
+That's a lot of blanks, isn't it? Now try this: In Blanks mode, tap on a blank on the first line. Some words will be revealed.
+
+Blanks mode works as follows: When you tap on a blank, all the words up through that blank are revealed. Conversely, when you tap on a revealed word, that word and all following words are hidden with blanks.
+
+Take a few moments to play around in Blanks mode, revealing and hiding words.
+
+When satisfied, go to Step 2b.</string>
+	</dict>
+    <key>Step 2b: Recite Using Blanks</key>
+	<dict>
+		<key>Text</key>
+		<string>  "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
+            
+            
+Now we'll use Blanks mode to learn to recite the text without seeing any words. 
+            
+For example, reveal a few words and say them aloud. ("Four score and seven years ago…") Then, hide those words and try to recite them. When successful, move on to the next few words. ("…our fathers brought forth…") After you've gone through the text, repeat the process with more words at a time. ("Four score and seven years ago, our fathers brought forth…") Eventually, you'll be able to recite the entire text without revealing any words! ("Four score … created equal.")
+
+So, using Blanks mode, now practice the text until you can recite it while looking at only blanks. 
+
+When satisfied, go to Step 3a.</string>
+	</dict>
+    <key>Step 3a: Recite Using Nothing</key>
+	<dict>
+		<key>Text</key>
+		<string>  "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
+
+
+In the previous step, we recited the text while looking at only blanks. This means the text must be in our head. Now we need to recite without any blanks.
+
+To facilitate this, there is "Nothing" mode. Nothing mode simply hides everything: text and blanks. Try switching between Nothing mode and Blanks mode by tapping the corresponding buttons at the bottom of the screen.
+
+You can recite the text while looking at an empty screen, looking up at nothing in particular, focusing on a distant object, or looking at yourself in a mirror. If you get stuck while reciting, then switch back to Blanks mode to give yourself a hint.
+
+Now practice the text until you can recite it while looking at nothing. 
+
+When satisfied, go to Step 3b.</string>
+	</dict>
+    <key>Step 3b: Record Yourself</key>
+	<dict>
+		<key>Text</key>
+		<string>  "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
+            
+            
+In the previous step, we recited the text while looking at nothing. But how do we know we said it right? And what if our text was longer? Fortunately, we can record our voice to check.
+
+Recording is accessed by the "Recording" button in the bottom-right of the screen. This button also notes the state of recording. ("Off," "On," "Paused" or "Playing.")
+
+Tap the "Recording" button. A small window (a popover) will appear. Then tap "Record/Pause." This will start the recording. Speak into the iPad's microphone (near the earphone jack), just to test this out. When done, tap "Stop." 
+
+Now to hear yourself: In the recording popover, tap "Playback." The controls for playing will appear. Then tap "Play/Pause." You will hear your voice!
+            
+For playback, you can move the slider (below "Play/Pause") to go backward or forward in the recording. Try it now.
+
+Using the recording features, now recite the text while recording yourself. Then play the recording to check yourself. 
+
+When satisfied, go to Step 4.</string>
+	</dict>
+    <key>Step 4: Add Your Own Text</key>
+	<dict>
+		<key>Text</key>
+		<string>  "Four score and seven years ago, our fathers brought forth, on this continent, a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal."
+            
+            
+By now, you should be able to recite the above text without looking at the screen. And you should know how to record your voice to prove you've recited correctly. Congratulations!
+
+Now it's time to memorize your own text! You can add a new text by tapping "+" in the upper-left of the screen. The new text will be added to the "Texts" menu and shown to you immediately. New texts include instructions on how to edit their contents.
+        
+Try making a new text now, then edit it to contain some text you would like to memorize.</string>
+    </dict>
 </dict>
 </plist>

@@ -719,6 +719,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	
     self.previousBlanksModeString = nil;
 	self.currentText = sender.currentText;
+    self.currentTextTextView.contentOffset = CGPointMake(0, 0);
 }
 
 - (void)textViewDidChangeSelection:(UITextView *)theTextView {
@@ -768,7 +769,7 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	if (createLaunchImages) {
 		
 		self.topToolbar.items = nil;
-		self.titleLabel.text = @"";
+		self.titleLabel.text = @"Text Memory";
 		self.currentTextTextView.text = @"";
 		self.bottomToolbar.items = nil;
 	} else {

@@ -127,7 +127,7 @@
     if (!self.audioPlayer.playing) {
         
         // This may not be needed. But sometimes there was a pop or clipping sound at the start of a recording. Hopefully this (or audioRecorder prepareToRecord) fixes it.
-        [self.audioPlayer prepareToPlay];
+        //[self.audioPlayer prepareToPlay];
         
         [self.audioPlayer play];
         
@@ -201,7 +201,7 @@
     if (self.audioPlayer == nil) {
         
         AVAudioPlayer *anAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:self.voiceRecordingURL error:nil];
-        if (anAudioPlayer == nil) {
+        if (anAudioPlayer == nil || anAudioPlayer.duration == 0) {
             
             self.statusLabel.text = @"Nothing to play yet.";
             self.playOrPauseButton.enabled = NO;

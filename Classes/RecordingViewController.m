@@ -16,12 +16,15 @@
 
 @property (nonatomic, retain) AVAudioRecorder *audioRecorder;
 
+// Whether prepareToRecord: was called yet.
+@property (nonatomic) BOOL recorderIsPrepared;
+
 @end
 
 @implementation RecordingViewController
 
 @synthesize delegate, recordOrPauseButton, statusLabel, stopButton, voiceRecordingURL;
-@synthesize audioRecorder;
+@synthesize audioRecorder, recorderIsPrepared;
 
 - (void)dealloc {
 	
@@ -61,9 +64,6 @@
     
     if (!self.audioRecorder.recording) {
         
-        // This may not be needed. But sometimes there was a pop or clipping sound at the start of a recording. Hopefully this (or audioPlayer prepareToPlay) fixes it.
-        [self.audioRecorder prepareToRecord];
-        
         [self.audioRecorder record];
         self.stopButton.enabled = YES;
         self.statusLabel.text = @"Recording started.";
@@ -84,6 +84,17 @@
     self.statusLabel.text = @"Recording done.";
     
     [self.delegate recordingViewControllerDidStopRecording:self];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (!recorderIsPrepared) {
+        
+        // Sometimes there was a pop or clipping sound at the start of a recording. Hopefully this fixes it.
+        recorderIsPrepared = [self.audioRecorder prepareToRecord];
+    }
 }
 
 - (void)viewDidLoad {
@@ -130,6 +141,7 @@
             self.audioRecorder = anAudioRecorder;
             self.recordOrPauseButton.enabled = YES;
             self.stopButton.enabled = NO;
+            self.recorderIsPrepared = NO;
         }
         [anAudioRecorder release];
     }

@@ -115,12 +115,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="754082218"/>
 							</object>
-							<object class="IBUIBarButtonItem" id="289560517">
-								<string key="IBUITitle">Recording: Off</string>
-								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
-								<int key="IBUIStyle">1</int>
-								<reference key="IBUIToolbar" ref="754082218"/>
-							</object>
 						</object>
 						<object class="NSColor" key="IBUITintColor">
 							<int key="NSColorSpace">1</int>
@@ -211,6 +205,12 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 								<reference key="IBUIToolbar" ref="421974764"/>
 								<int key="IBUISystemItemIdentifier">5</int>
 							</object>
+							<object class="IBUIBarButtonItem" id="289560517">
+								<string key="IBUITitle">Recording: Off</string>
+								<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="421974764"/>
+							</object>
 						</object>
 						<object class="NSColor" key="IBUITintColor">
 							<int key="NSColorSpace">1</int>
@@ -220,7 +220,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 					<object class="IBUILabel" id="635371483">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">290</int>
-						<string key="NSFrame">{{200, 9}, {368, 25}}</string>
+						<string key="NSFrame">{{175, 9}, {420, 25}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="421974764"/>
@@ -451,7 +451,6 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 							<reference ref="513401996"/>
 							<reference ref="69437449"/>
 							<reference ref="481905089"/>
-							<reference ref="289560517"/>
 						</object>
 						<reference key="parent" ref="766721923"/>
 					</object>
@@ -475,6 +474,7 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 							<reference ref="275131949"/>
 							<reference ref="10711532"/>
 							<reference ref="739106468"/>
+							<reference ref="289560517"/>
 						</object>
 						<reference key="parent" ref="766721923"/>
 					</object>
@@ -528,13 +528,13 @@ bm9wcXJzdHV2d3h5emFiY2RlZmdoaWprbG0</string>
 						<reference key="parent" ref="421974764"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">77</int>
-						<reference key="object" ref="289560517"/>
-						<reference key="parent" ref="754082218"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">80</int>
 						<reference key="object" ref="739106468"/>
+						<reference key="parent" ref="421974764"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">77</int>
+						<reference key="object" ref="289560517"/>
 						<reference key="parent" ref="421974764"/>
 					</object>
 				</object>
