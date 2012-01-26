@@ -331,6 +331,12 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 }
 
 - (void)editCurrentText {
+    
+    // If the text view is the first responder, then the keyboardWillHide: notification will be triggered when the editing view appears. And the keyboardWillShow: notification will be triggered when returning to this view. This will happen even if the keyboard never appears. So we'll resign the first responder here to avoid those issues.
+    if (self.currentTextTextView.isFirstResponder) {
+        
+        [self.currentTextTextView resignFirstResponder];
+    }
 	
 	EditTextViewController *anEditTextViewController = [(EditTextViewController *)[EditTextViewController alloc] initWithText:self.currentText contentOffset:self.currentTextTextView.contentOffset font:self.currentTextTextView.font];
 	anEditTextViewController.delegate = self;
@@ -342,34 +348,6 @@ NSString *testWidthString = @"_abcdefghijklmnopqrstuvwxyzabcdefghijklm_";
 	[self.navigationController pushViewController:anEditTextViewController animated:NO];
 	
 	[anEditTextViewController release];
-}
-
-- (IBAction)editText:(id)sender {
-	
-	// If a default text, tell why it can't be edited. Else, proceed to editing view.
-	
-	if ([self.currentText isDefaultData]) {
-	
-		UIActionSheet *anActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"Can't Edit Examples", nil];
-		
-		// Disable buttons. This action sheet is informational only.
-		anActionSheet.userInteractionEnabled = NO;
-		
-		[anActionSheet showFromBarButtonItem:self.editTextBarButtonItem animated:NO];
-		[anActionSheet release];
-	} else {
-		
-		EditTextViewController *anEditTextViewController = [(EditTextViewController *)[EditTextViewController alloc] initWithText:self.currentText contentOffset:self.currentTextTextView.contentOffset font:self.currentTextTextView.font];
-		anEditTextViewController.delegate = self;
-		
-		// Show the editing view. Instead of the navigation controller's transition, do a fade.
-		CATransition *aTransition = [CATransition animation];
-		aTransition.duration = fadeTransitionDuration;
-		[self.navigationController.view.layer addAnimation:aTransition forKey:nil];
-		[self.navigationController pushViewController:anEditTextViewController animated:NO];
-		
-		[anEditTextViewController release];
-	}
 }
 
 - (void)editTextViewControllerDidFinishEditing:(EditTextViewController *)sender {

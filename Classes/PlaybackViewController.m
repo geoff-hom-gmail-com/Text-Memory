@@ -126,9 +126,6 @@
     // If not playing, start playing.
     if (!self.audioPlayer.playing) {
         
-        // This may not be needed. But sometimes there was a pop or clipping sound at the start of a recording. Hopefully this (or audioRecorder prepareToRecord) fixes it.
-        //[self.audioPlayer prepareToPlay];
-        
         [self.audioPlayer play];
         
         // Sometimes, when the user slides the playhead to the start, the current time becomes negative. We'll fix that here.

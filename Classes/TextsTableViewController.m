@@ -45,7 +45,7 @@
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Text" inManagedObjectContext:aTextMemoryAppDelegate.managedObjectContext]; 
 	[request setEntity:entity];
 	
-	// Set sorting: alphabetize by whether default data, then by title.
+	// Set sorting: Alphabetize by whether default data, then by title.
 	NSSortDescriptor *byDefaultDataSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"isDefaultData_" ascending:NO];
 	NSSortDescriptor *byTitleSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
 	NSArray *sortDescriptors = [NSArray arrayWithObjects:byDefaultDataSortDescriptor, byTitleSortDescriptor, nil];
@@ -64,7 +64,7 @@
 	}
 	
 	// Move instructions to the top of the table.
-	int instructionsIndex = -1;
+	NSUInteger instructionsIndex = -1;
 	for (int i=0; i < fetchResultsMutableArray.count; i++) {
 		
 		Text *aText = [fetchResultsMutableArray objectAtIndex:i];
@@ -78,6 +78,29 @@
 		Text *instructionsText = [fetchResultsMutableArray objectAtIndex:instructionsIndex];
 		[fetchResultsMutableArray removeObjectAtIndex:instructionsIndex];
 		[fetchResultsMutableArray insertObject:instructionsText atIndex:0];
+	}
+    
+    // Move contact info to the bottom of the default data.
+    NSUInteger contactInfoIndex = -1;
+    NSUInteger numberOfDefaultDataTextsInteger = 0;
+	for (int i=0; i < fetchResultsMutableArray.count; i++) {
+		
+		Text *aText = [fetchResultsMutableArray objectAtIndex:i];
+        if ([aText isDefaultData]) {
+            
+            numberOfDefaultDataTextsInteger++;
+            if ([aText.title isEqualToString:contactInfoTextTitle]) {
+                
+                contactInfoIndex = i;
+            }
+        }
+	}
+	if (contactInfoIndex != -1) {
+		
+		Text *contactInfoText = [fetchResultsMutableArray objectAtIndex:contactInfoIndex];
+		[fetchResultsMutableArray removeObjectAtIndex:contactInfoIndex];
+        NSUInteger lastDefaultDataIndex = numberOfDefaultDataTextsInteger - 1;
+		[fetchResultsMutableArray insertObject:contactInfoText atIndex:lastDefaultDataIndex];
 	}
 	
 	self.textsArray = fetchResultsMutableArray;

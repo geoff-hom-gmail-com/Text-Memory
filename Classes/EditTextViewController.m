@@ -92,7 +92,7 @@
 	CATransition *aTransition = [CATransition animation];
 	aTransition.duration = fadeTransitionDuration;
 	[self.navigationController.view.layer addAnimation:aTransition forKey:nil];
-	[self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (id)initWithText:(Text *)theText contentOffset:(CGPoint)theContentOffset font:(UIFont *)theFont {

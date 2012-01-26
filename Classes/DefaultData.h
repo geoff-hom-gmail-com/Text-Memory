@@ -10,6 +10,9 @@
 
 #import <Foundation/Foundation.h>
 
+// Title of the text with this app's contact info.
+extern NSString *contactInfoTextTitle;
+
 // Name of the file for the default-data Core Data store.
 extern NSString *defaultDataStoreName;
 

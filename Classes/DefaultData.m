@@ -10,6 +10,8 @@
 #import "Text.h"
 #import "TextMemoryAppDelegate.h"
 
+NSString *contactInfoTextTitle = @"Contact Info";
+
 NSString *defaultDataStoreName = @"defaultDataStore.sqlite";
 
 NSString *welcomeTextTitle = @"Welcome!";

@@ -29,6 +29,7 @@ NSString *voiceRecordingFilenameString = @"voiceRecording.caf";
 // Segmented control for switching between modes.
 @property (nonatomic, retain) UISegmentedControl *segmentedControl;
 
+// Location of the audio file for playback.
 @property (nonatomic, retain) NSURL *voiceRecordingURL;
 
 // The segmented control's index changed, so show the appropriate UI: Recording or playback.
@@ -108,11 +109,8 @@ NSString *voiceRecordingFilenameString = @"voiceRecording.caf";
         UISegmentedControl *aSegmentedControl = [ [UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Recording", @"Playback", nil] ];
         aSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
-        //testing
-        // light blue
+        // A light blue.
         UIColor *aMediumLightColor = [UIColor colorWithRed:0 green:0.5 blue:1 alpha:1];
-        // light gray
-        //UIColor *aMediumLightColor = [UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1];
         aSegmentedControl.tintColor = aMediumLightColor;
         
         aSegmentedControl.selectedSegmentIndex = 0;

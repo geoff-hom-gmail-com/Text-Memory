@@ -5,16 +5,13 @@
 	<key>Welcome!</key>
 	<dict>
 		<key>Text</key>
-		<string>Welcome to Text Memory, by Geoff Hom!
+		<string>Welcome to Text Memory!
 		
 Suppose you have a passage that you enjoy reading. Now imagine being able to recite that passage to yourself or others, without any notes! Text Memory can get you there. 
             
 To learn how to use Text Memory, please go through the examples, which are several steps. 
             
-To start, tap "Texts" in the top-left of the screen, then tap on the text for Step 1.
-            
-            
-Correspondence may be sent to GeoffHom@gmail.com.</string>
+To start, tap "Texts" in the top-left of the screen, then tap on the text for Step 1.</string>
 	</dict>
     <key>Step 1: Read Intently and Aloud</key>
 	<dict>
@@ -112,5 +109,14 @@ Now it's time to memorize your own text! You can add a new text by tapping "+" i
         
 Try making a new text now, then edit it to contain some text you would like to memorize.</string>
     </dict>
+    <key>Contact Info</key>
+	<dict>
+		<key>Text</key>
+		<string>Text Memory was designed by Geoff Hom. Text Memory was also programmed by Geoff. Contact him at GeoffHom@gmail.com.
+            
+The Text Memory icon was made by Win Kang. Win is a freelance artist. Contact him at dawindow@aol.com.
+            
+Inspiration for Text Memory came from Ward Ortmann and from Christina Ha. Thank you!</string>
+	</dict>
 </dict>
 </plist>

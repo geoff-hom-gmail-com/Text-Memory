@@ -29,6 +29,7 @@
 		934915C21441786100ED3BD0 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = 934915C11441786100ED3BD0 /* Default-Landscape.png */; };
 		934916351442D5EE00ED3BD0 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 934916341442D5EE00ED3BD0 /* OverlayView.m */; };
 		936F74E114BF4584003C79A7 /* NSString+Words.m in Sources */ = {isa = PBXBuildFile; fileRef = 936F74E014BF4584003C79A7 /* NSString+Words.m */; };
+		9384EC1F14D29EE400317D93 /* dummy.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9384EC1E14D29EE400317D93 /* dummy.caf */; };
 		93908AD9142901960037CE62 /* DefaultData.m in Sources */ = {isa = PBXBuildFile; fileRef = 93908AD8142901960037CE62 /* DefaultData.m */; };
 		93908B2D142911D80037CE62 /* default-data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 93908B2C142911D80037CE62 /* default-data.plist */; };
 		93908B7114291A570037CE62 /* defaultDataStore.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 93908B7014291A570037CE62 /* defaultDataStore.sqlite */; };
@@ -77,6 +78,7 @@
 		934916341442D5EE00ED3BD0 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		936F74DF14BF4584003C79A7 /* NSString+Words.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Words.h"; sourceTree = "<group>"; };
 		936F74E014BF4584003C79A7 /* NSString+Words.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Words.m"; sourceTree = "<group>"; };
+		9384EC1E14D29EE400317D93 /* dummy.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = dummy.caf; sourceTree = "<group>"; };
 		93908AD7142901960037CE62 /* DefaultData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultData.h; sourceTree = "<group>"; };
 		93908AD8142901960037CE62 /* DefaultData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultData.m; sourceTree = "<group>"; };
 		93908B2C142911D80037CE62 /* default-data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "default-data.plist"; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			children = (
 				934915C11441786100ED3BD0 /* Default-Landscape.png */,
 				934915BF1441785400ED3BD0 /* Default-Portrait.png */,
+				9384EC1E14D29EE400317D93 /* dummy.caf */,
 				9349158F1441724300ED3BD0 /* iTunesArtwork */,
 				9349157E14416A3800ED3BD0 /* Icon-Small-50.png */,
 				9349151514410CDE00ED3BD0 /* Icon-72.png */,
@@ -282,6 +285,7 @@
 				934915C21441786100ED3BD0 /* Default-Landscape.png in Resources */,
 				93059DFC14A2DF39001ECE4D /* RecordingViewController.xib in Resources */,
 				93BE881414B3D8E8005DD77F /* PlaybackViewController.xib in Resources */,
+				9384EC1F14D29EE400317D93 /* dummy.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
