@@ -14,7 +14,7 @@
 		<string>Icon-Small-50</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
-	<true/>
+	<false/>
 	<key>CFBundleIdentifier</key>
 	<string>com.geoffhom.text-memory</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -26,7 +26,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.20</string>
+	<string>1.21</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
