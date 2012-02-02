@@ -71,7 +71,6 @@ BOOL restoreDefaultData = NO;
     return YES;
 }
 
-
 - (void)applicationWillResignActive:(UIApplication *)application {
     /*
      Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -79,13 +78,11 @@ BOOL restoreDefaultData = NO;
      */
 }
 
-
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
 }
-
 
 /**
  applicationWillTerminate: saves changes in the application's managed object context before the application terminates.
@@ -106,7 +103,6 @@ BOOL restoreDefaultData = NO;
         } 
     }
 }
-
 
 #pragma mark -
 #pragma mark Core Data stack
@@ -129,7 +125,6 @@ BOOL restoreDefaultData = NO;
     return managedObjectContext_;
 }
 
-
 /**
  Returns the managed object model for the application.
  If the model doesn't already exist, it is created from the application's model.
@@ -139,7 +134,7 @@ BOOL restoreDefaultData = NO;
     if (managedObjectModel_ != nil) {
         return managedObjectModel_;
     }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Text_Memory" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"TextMemory" withExtension:@"momd"];
     managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
     return managedObjectModel_;
 }
@@ -151,8 +146,7 @@ BOOL restoreDefaultData = NO;
     }
     
 	// If the main store doesn't exist, and we're not making the default-data store, then copy the default data to the main store.
-	
-	NSURL *mainStoreURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:mainStoreName];
+    NSURL *mainStoreURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:mainStoreName];
 	NSString *mainStorePath = [mainStoreURL path];
 	NSFileManager *aFileManager = [[NSFileManager alloc] init];
 	BOOL copyDefaultData = NO;
@@ -162,7 +156,7 @@ BOOL restoreDefaultData = NO;
 	} 
 	[aFileManager release];
     
-    NSError *error = nil;
+    NSError *error = nil;    
     persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
     if (![persistentStoreCoordinator_ addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:mainStoreURL options:options error:&error]) {
